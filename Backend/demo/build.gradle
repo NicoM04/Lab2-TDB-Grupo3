@@ -33,6 +33,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web:3.2.4'
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.2.4'
 
+	implementation 'org.locationtech.jts:jts-core:1.18.2'
 	// JWT (JJWT)
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.2'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.2'

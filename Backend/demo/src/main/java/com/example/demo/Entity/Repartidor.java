@@ -3,6 +3,8 @@ package com.example.demo.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.locationtech.jts.geom.Point;
 import java.time.LocalDate;
 
 @Data
@@ -18,4 +20,6 @@ public class Repartidor {
     private Integer cantidad_entregas;
 
     private Integer puntuacion; // Aunque hay que quitarlo, lo dejo para que me funcione por como estan las tablas...
+
+    private Point ubicacion;
 }

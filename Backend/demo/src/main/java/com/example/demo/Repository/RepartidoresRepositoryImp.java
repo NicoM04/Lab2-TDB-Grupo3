@@ -5,6 +5,8 @@ import com.example.demo.Entity.Repartidor;
 import org.sql2o.Sql2o;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.locationtech.jts.geom.Point;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
     public Repartidor crear(Repartidor repartidor) {
         String sql = "INSERT INTO repartidor (nombre_repartidor, rut, telefono, fecha_contratacion, activo, cantidad_entregas) " +
                 "VALUES (:nombre_repartidor, :rut, :telefono, :fecha_contratacion, :activo, :cantidad_entregas)";
+        String wkt = repartidor.getUbicacion() != null ? repartidor.getUbicacion().toText() : null;
         try (var con = sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
                     .addParameter("nombre_repartidor", repartidor.getNombre_repartidor())
@@ -28,6 +31,7 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
                     .addParameter("fecha_contratacion", repartidor.getFecha_contratacion())
                     .addParameter("activo", repartidor.getActivo())
                     .addParameter("cantidad_entregas", repartidor.getCantidad_entregas())
+                    .addParameter("ubicacion", wkt)
                     .executeUpdate()
                     .getKey();
             repartidor.setId_repartidor(id);

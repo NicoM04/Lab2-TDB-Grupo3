@@ -19,11 +19,13 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
         try (Connection conn = sql2o.open()) {
             String sql = "INSERT INTO empresas_asociadas (nombre_empresa, rut_empresa, correo_contacto, direccion) " +
                     "VALUES (:nombre_empresa, :rut_empresa, :correo_contacto, :direccion)";
+            String wkt = empresa.getUbicacion() != null ? empresa.getUbicacion().toText() : null;
             conn.createQuery(sql)
                     .addParameter("nombre_empresa", empresa.getNombre_empresa())
                     .addParameter("rut_empresa", empresa.getRut_empresa())
                     .addParameter("correo_contacto", empresa.getCorreo_contacto())
                     .addParameter("direccion", empresa.getDireccion())
+                    .addParameter("ubicacion", wkt)
                     .executeUpdate();
             return empresa;
         } catch (Exception e) {

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.locationtech.jts.geom.Point;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +15,6 @@ public class EmpresasAsociadas {
     private String rut_empresa;
     private String correo_contacto;
     private String direccion;
+
+    private Point ubicacion;
 }

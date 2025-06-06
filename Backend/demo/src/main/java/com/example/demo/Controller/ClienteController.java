@@ -16,7 +16,7 @@ public class ClienteController {
 
     @Autowired
     private ClienteService clienteService;
-
+    
     @PostMapping("/register")
     public ResponseEntity<Object> createUser(@RequestBody Cliente user) {
         return clienteService.crearCliente(user);

@@ -23,6 +23,7 @@ public class ClienteRepositoryImp implements ClienteRepository {
         String query = "INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direccion, telefono, fecha_registro) " +
                 "VALUES (:nombre_cliente, :contrasena_cliente, :correo_cliente, :direccion, :telefono, :fecha_registro)";
         try (var con = sql2o.open()) {
+            String wkt = cliente.getUbicacion() != null ? cliente.getUbicacion().toText() : null;
             con.createQuery(query)
                     .addParameter("nombre_cliente", cliente.getNombre_cliente())
                     .addParameter("contrasena_cliente", cliente.getContrasena_cliente())
@@ -30,6 +31,7 @@ public class ClienteRepositoryImp implements ClienteRepository {
                     .addParameter("direccion", cliente.getDireccion())
                     .addParameter("telefono", cliente.getTelefono())
                     .addParameter("fecha_registro", cliente.getFecha_registro())
+                    .addParameter("ubicacion", wkt)
                     .executeUpdate();
         }
     }
