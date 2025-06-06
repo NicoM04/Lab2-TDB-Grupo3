@@ -1,0 +1,69 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.4'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2024.0.1")
+	set('tanzuScgExtensionsVersion', "1.0.0")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.4'
+	implementation 'org.springframework.boot:spring-boot-starter-web:3.2.4'
+	implementation 'org.springframework.boot:spring-boot-starter-security:3.2.4'
+
+	// JWT (JJWT)
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.2' // para usar Jackson como deserializador JSON
+
+	// Lombok
+	implementation 'org.projectlombok:lombok:1.18.30'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+	// Bases de datos
+	runtimeOnly 'com.mysql:mysql-connector-j:8.3.0'
+	runtimeOnly 'org.postgresql:postgresql:42.7.2'
+
+	// SQL2O (opcional si lo usás para acceso directo a SQL)
+	implementation 'org.sql2o:sql2o:1.8.0'
+
+	// Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.4'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+
+
+dependencyManagement {
+	imports {
+		mavenBom "com.vmware.tanzu.springcloudgateway.extensions:extensions-bom:${tanzuScgExtensionsVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
