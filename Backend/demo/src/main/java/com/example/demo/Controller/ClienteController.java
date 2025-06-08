@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Entity.Cliente;
+import com.example.demo.Entity.ZonaCobertura;
 import com.example.demo.Service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -74,5 +75,20 @@ public class ClienteController {
     public Cliente clienteMayorGasto() {
         return clienteService.obtenerClienteMayorGasto();
     }
+
+    @GetMapping("/zonaCobertura/{idCliente}")
+    public ResponseEntity<ZonaCobertura> verificarZonaDeCobertura(@PathVariable Integer idCliente) {
+        ZonaCobertura zona = clienteService.verificarZonaDeCliente(idCliente);
+        return zona != null ? ResponseEntity.ok(zona) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/fueraDeCobertura")
+    public ResponseEntity<List<Integer>> clientesFueraDeRadio(
+            @RequestParam(defaultValue = "5000") Double distancia) {
+        List<Integer> clientes = clienteService.getClientesFueraDeRadio(distancia);
+        return clientes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(clientes);
+    }
+
+
 
 }

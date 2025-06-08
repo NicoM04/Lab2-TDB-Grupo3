@@ -36,4 +36,14 @@ public class RutaEstimadaService {
     public void delete(Integer id_ruta) {
         rutaEstimadaRepository.delete(id_ruta);
     }
+
+    public Double calcularDistanciaTotalPorRepartidorEnMes(Integer idRepartidor, String fechaInicio, String fechaFin) {
+        return rutaEstimadaRepository.calcularDistanciaTotalPorRepartidorEnMes(idRepartidor, fechaInicio, fechaFin);
+    }
+
+    public List<Integer> getPedidosConRutaEnMasDeDosZonas() {
+        return rutaEstimadaRepository.getPedidosConRutaEnMasDeDosZonas();
+    }
+
+
 }

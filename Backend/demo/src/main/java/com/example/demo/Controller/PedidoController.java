@@ -102,5 +102,21 @@ public class PedidoController {
         return ResponseEntity.ok(pedidos); // Devolver los pedidos encontrados
     }
 
+    @GetMapping("/masCercanos/{idEmpresa}")
+    public ResponseEntity<List<Pedido>> obtenerPedidosMasCercanos(
+            @PathVariable Integer idEmpresa,
+            @RequestParam(defaultValue = "5") int limite) {
+        List<Pedido> pedidos = pedidoService.getPedidosMasCercanos(idEmpresa, limite);
+        return pedidos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pedidos);
+    }
+
+    @GetMapping("/masLejanosPorEmpresa")
+    public ResponseEntity<List<Pedido>> obtenerPedidosMasLejanos() {
+        List<Pedido> pedidos = pedidoService.getPedidosMasLejanosPorEmpresa();
+        return pedidos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pedidos);
+    }
+
+
+
 
 }

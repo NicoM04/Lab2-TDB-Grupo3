@@ -59,4 +59,13 @@ public class PedidoService {
     public List<Pedido> obtenerPedidosPorCliente(Integer idCliente, int page, int size) {
         return pedidoRepository.getPedidosByCliente(idCliente, page, size);
     }
+
+    public List<Pedido> getPedidosMasCercanos(Integer idEmpresa, int limite) {
+        return pedidoRepository.getPedidosMasCercanos(idEmpresa, limite);
+    }
+
+    public List<Pedido> getPedidosMasLejanosPorEmpresa() {
+        return pedidoRepository.getPedidosMasLejanosPorEmpresa();
+    }
+
 }

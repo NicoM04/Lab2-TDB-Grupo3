@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 import com.example.demo.Entity.Cliente;
+import com.example.demo.Entity.ZonaCobertura;
 import com.example.demo.Repository.ClienteRepository;
 import com.example.demo.config.InputVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,4 +125,14 @@ public class ClienteService {
     public Cliente obtenerClienteMayorGasto() {
         return clienteRepository.getClienteMayorGasto();
     }
+
+    public ZonaCobertura verificarZonaDeCliente(Integer idCliente) {
+        return clienteRepository.verificarZonaDeCliente(idCliente);
+    }
+
+    public List<Integer> getClientesFueraDeRadio(Double distanciaMetros) {
+        return clienteRepository.getClientesFueraDeRadio(distanciaMetros);
+    }
+
+
 }

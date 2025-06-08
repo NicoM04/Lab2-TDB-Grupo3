@@ -22,4 +22,10 @@ public interface PedidoRepository {
 
     List<Pedido> getPedidosByCliente(Integer idCliente, int page, int size);
 
+    List<Pedido> getPedidosMasCercanos(Integer idEmpresa, int limite);
+
+    List<Pedido> getPedidosMasLejanosPorEmpresa();
+
+
+
 }

@@ -119,4 +119,43 @@ public class RutaEstimadaRepositoryImp implements RutaEstimadaRepository {
             return new RutaEstimada(id_ruta, id_pedido, linea);
         }
     }
+
+    @Override
+    public Double calcularDistanciaTotalPorRepartidorEnMes(Integer idRepartidor, String fechaInicio, String fechaFin) {
+        String sql = """
+        SELECT SUM(ST_Length(r.ruta::geography)) AS total_distancia
+        FROM ruta_estimada r
+        JOIN pedido p ON r.id_pedido = p.id_pedido
+        WHERE p.id_repartidor = :idRepartidor
+          AND p.fecha_pedido BETWEEN :inicio AND :fin
+          AND r.ruta IS NOT NULL
+    """;
+
+        try (Connection conn = sql2o.open()) {
+            Double total = conn.createQuery(sql)
+                    .addParameter("idRepartidor", idRepartidor)
+                    .addParameter("inicio", fechaInicio)
+                    .addParameter("fin", fechaFin)
+                    .executeScalar(Double.class);
+            return total != null ? total : 0.0;
+        }
+    }
+
+    @Override
+    public List<Integer> getPedidosConRutaEnMasDeDosZonas() {
+        String sql = """
+        SELECT r.id_pedido
+        FROM ruta_estimada r
+        JOIN zona_cobertura z ON ST_Intersects(r.ruta, z.zona)
+        GROUP BY r.id_pedido
+        HAVING COUNT(z.zona_id) > 2
+    """;
+
+        try (Connection conn = sql2o.open()) {
+            return conn.createQuery(sql)
+                    .executeScalarList(Integer.class);
+        }
+    }
+
+
 }

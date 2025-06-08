@@ -212,6 +212,48 @@ public class PedidoRepositoryImp implements PedidoRepository {
         }
     }
 
+    @Override
+    public List<Pedido> getPedidosMasCercanos(Integer idEmpresa, int limite) {
+        String sql = """
+        SELECT p.*
+        FROM pedido p
+        JOIN cliente c ON p.id_cliente = c.id_cliente
+        JOIN empresas_asociadas e ON p.id_empresa = e.id_empresa
+        WHERE e.id_empresa = :idEmpresa
+          AND c.ubicacion IS NOT NULL
+          AND e.ubicacion IS NOT NULL
+        ORDER BY ST_Distance(c.ubicacion, e.ubicacion)
+        LIMIT :limite
+        """;
+
+        try (Connection conn = sql2o.open()) {
+            return conn.createQuery(sql)
+                    .addParameter("idEmpresa", idEmpresa)
+                    .addParameter("limite", limite)
+                    .executeAndFetch(Pedido.class);
+        }
+    }
+
+    @Override
+    public List<Pedido> getPedidosMasLejanosPorEmpresa() {
+        String sql = """
+        SELECT DISTINCT ON (p.id_empresa)
+               p.*
+        FROM pedido p
+        JOIN cliente c ON p.id_cliente = c.id_cliente
+        JOIN empresas_asociadas e ON p.id_empresa = e.id_empresa
+        WHERE c.ubicacion IS NOT NULL AND e.ubicacion IS NOT NULL
+        ORDER BY p.id_empresa, ST_Distance(c.ubicacion, e.ubicacion) DESC
+    """;
+
+        try (Connection conn = sql2o.open()) {
+            return conn.createQuery(sql)
+                    .executeAndFetch(Pedido.class);
+        }
+    }
+
+
+
 
 
 

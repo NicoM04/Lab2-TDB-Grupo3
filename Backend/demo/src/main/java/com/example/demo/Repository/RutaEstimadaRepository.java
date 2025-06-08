@@ -11,4 +11,9 @@ public interface RutaEstimadaRepository {
     List<RutaEstimada> getAll(int page, int size);
     String update(RutaEstimada ruta, Integer id_ruta);
     void delete(Integer id_ruta);
+
+    Double calcularDistanciaTotalPorRepartidorEnMes(Integer idRepartidor, String fechaInicio, String fechaFin);
+
+    List<Integer> getPedidosConRutaEnMasDeDosZonas();
+
 }

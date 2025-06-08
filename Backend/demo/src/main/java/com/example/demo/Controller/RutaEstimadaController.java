@@ -61,4 +61,22 @@ public class RutaEstimadaController {
         rutaEstimadaService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/distancia-recorrida")
+    public ResponseEntity<Double> distanciaTotalRecorrida(
+            @RequestParam Integer idRepartidor,
+            @RequestParam String fechaInicio,
+            @RequestParam String fechaFin) {
+
+        Double distancia = rutaEstimadaService.calcularDistanciaTotalPorRepartidorEnMes(idRepartidor, fechaInicio, fechaFin);
+        return ResponseEntity.ok(distancia);
+    }
+
+    @GetMapping("/rutasEnVariasZonas")
+    public ResponseEntity<List<Integer>> obtenerPedidosConRutasQueCruzanZonas() {
+        List<Integer> pedidos = rutaEstimadaService.getPedidosConRutaEnMasDeDosZonas();
+        return pedidos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pedidos);
+    }
+
+
 }

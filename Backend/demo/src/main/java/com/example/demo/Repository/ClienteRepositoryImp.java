@@ -1,6 +1,7 @@
 package com.example.demo.Repository;
 
 import com.example.demo.Entity.Cliente;
+import com.example.demo.Entity.ZonaCobertura;
 import com.example.demo.config.InputVerificationService;
 import com.example.demo.config.JwtMiddlewareService;
 import org.springframework.http.ResponseEntity;
@@ -160,6 +161,62 @@ public class ClienteRepositoryImp implements ClienteRepository {
             return null;
         }
     }
+
+    @Override
+    public ZonaCobertura verificarZonaDeCliente(Integer idCliente) {
+        String sql = """
+        SELECT z.zona_id, z.nombre, ST_AsText(z.geom) AS zona_text
+        FROM zona_cobertura z
+        JOIN cliente c ON ST_Within(c.ubicacion, z.geom)
+        WHERE c.id_cliente = :idCliente
+    """;
+
+        try (Connection conn = sql2o.open()) {
+            ResultadoZona resultado = conn.createQuery(sql)
+                    .addParameter("idCliente", idCliente)
+                    .executeAndFetchFirst(ResultadoZona.class);
+            return resultado != null ? resultado.toZonaCobertura() : null;
+        }
+    }
+
+    // Clase auxiliar para transformar zona
+    private static class ResultadoZona {
+        public Integer zona_id;
+        public String nombre;
+        public String zona_text;
+
+        public ZonaCobertura toZonaCobertura() {
+            try {
+                var reader = new org.locationtech.jts.io.WKTReader();
+                var polygon = (org.locationtech.jts.geom.Polygon) reader.read(zona_text);
+                return new ZonaCobertura(zona_id, nombre, polygon);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public List<Integer> getClientesFueraDeRadio(Double distanciaMetros) {
+        String sql = """
+        SELECT c.id_cliente
+        FROM cliente c
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM empresas_asociadas e
+            WHERE ST_Distance(c.ubicacion, e.ubicacion) < :distancia
+        )
+    """;
+
+        try (Connection conn = sql2o.open()) {
+            return conn.createQuery(sql)
+                    .addParameter("distancia", distanciaMetros)
+                    .executeScalarList(Integer.class);
+        }
+    }
+
+
 
 
 
