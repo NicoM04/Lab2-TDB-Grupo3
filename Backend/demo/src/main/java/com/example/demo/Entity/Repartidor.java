@@ -21,5 +21,5 @@ public class Repartidor {
 
     private Integer puntuacion; // Aunque hay que quitarlo, lo dejo para que me funcione por como estan las tablas...
 
-    private Point ubicacion;
+    private Point ubicacion_actual;
 }

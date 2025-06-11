@@ -60,4 +60,13 @@ public class RepartidorController {
     public List<Map<String, Object>> obtenerMejoresRepartidores() {
         return repartidorService.obtenerTop3RepartidoresConMejorRendimiento();
     }
+
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //3) Calcular la distancia total recorrida por un repartidor en el último mes.
+    @GetMapping("/distanciaTotalRecorrida/{idRepartidor}")
+    public Double obtenerDistanciaTotalRecorrida(
+            @PathVariable int idRepartidor,
+            @RequestParam int ultimosMeses) {
+        return repartidorService.obtenerDistanciaTotalRecorridaEnUltimoMes(idRepartidor, ultimosMeses);
+    }
 }

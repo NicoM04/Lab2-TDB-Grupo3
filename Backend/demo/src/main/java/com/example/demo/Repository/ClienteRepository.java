@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.ClienteLejanoDTO;
 import com.example.demo.Entity.Cliente;
 import com.example.demo.Entity.ZonaCobertura;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,14 @@ public interface ClienteRepository {
     public ResponseEntity<Cliente> findByName(String name);
     Cliente getClienteMayorGasto();
 
-    ZonaCobertura verificarZonaDeCliente(Integer idCliente);
-
     List<Integer> getClientesFueraDeRadio(Double distanciaMetros);
+
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //2) Determinar si un cliente se encuentra dentro de una zona de cobertura.
+    String verificarZonaDeCliente(Integer idCliente);
+
+    //6)Determinar los clientes que están a más de 5km de cualquier empresa
+    List<ClienteLejanoDTO> getClientesLejanosDeTodasLasEmpresas();
+
 
 }

@@ -186,7 +186,7 @@ $$;
 
 -- Procedimiento almacenado: Descontar stock al confirmar pedido (si aplica)
 CREATE OR REPLACE PROCEDURE confirmar_pedido_y_descontar_stock(p_id_pedido INT)
-AS $$ 
+AS $$
 DECLARE
     r RECORD;
     v_stock_actual INT;
@@ -349,7 +349,7 @@ BEGIN
             RAISE NOTICE 'Aun no han pasado 48 horas desde el pedido.';
         END IF;
     ELSE
-        RAISE NOTICE 'Estado no es "Entregado" o no ha cambiado.'; 
+        RAISE NOTICE 'Estado no es "Entregado" o no ha cambiado.';
     END IF;
 
     RETURN NEW;
@@ -480,3 +480,21 @@ CREATE TRIGGER trigger_validar_detalle
 BEFORE INSERT OR UPDATE ON detalle_de_pedido
 FOR EACH ROW
 EXECUTE FUNCTION validar_detalle_pedido();
+
+
+-- Activar extensión PostGIS
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Agregar campos de ubicación geográfica a las tablas
+ALTER TABLE cliente ADD COLUMN ubicacion GEOMETRY(Point, 4326);
+ALTER TABLE repartidores ADD COLUMN ubicacion_actual GEOMETRY(Point, 4326);
+ALTER TABLE empresas_asociadas ADD COLUMN ubicacion GEOMETRY(Point, 4326);
+ALTER TABLE pedido ADD COLUMN ruta_estimada GEOMETRY(LineString, 4326);
+
+-- Crear tabla de zonas de cobertura
+CREATE TABLE zonas_cobertura (
+    zona_id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    tipo VARCHAR(100),
+    geom GEOMETRY(Polygon, 4326)
+);

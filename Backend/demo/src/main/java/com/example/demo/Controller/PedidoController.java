@@ -1,8 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.DTO.EstadoPedidoDTO;
-import com.example.demo.DTO.PedidoCompletoDTO;
-import com.example.demo.DTO.ResumenPedidoDTO;
+import com.example.demo.DTO.*;
 import com.example.demo.Entity.Pedido;
 import com.example.demo.Service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,13 +108,35 @@ public class PedidoController {
         return pedidos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pedidos);
     }
 
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+
+    //1) Encontrar los 5 puntos de entrega más cercanos a una empresa asociada.
+    @GetMapping("/masCercanosEmpresa/{idEmpresa}")
+    public ResponseEntity<List<PedidoCercanoDTO>> obtenerPedidosMasCercanosEmpresa(
+            @PathVariable Integer idEmpresa,
+            @RequestParam(defaultValue = "5") int limite) {
+
+        List<PedidoCercanoDTO> pedidos = pedidoService.getPedidosMasCercanosEmpresa(idEmpresa, limite);
+
+        if (pedidos.isEmpty()) {
+            return ResponseEntity.noContent().build();  // 204 si no hay resultados
+        }
+        return ResponseEntity.ok(pedidos);
+    }
+
+    //4) Identificar el punto de entrega más lejano desde cada empresa asociada.
     @GetMapping("/masLejanosPorEmpresa")
-    public ResponseEntity<List<Pedido>> obtenerPedidosMasLejanos() {
-        List<Pedido> pedidos = pedidoService.getPedidosMasLejanosPorEmpresa();
+    public ResponseEntity<List<PedidoCercanoDTO>> obtenerPedidosMasLejanos() {
+        List<PedidoCercanoDTO> pedidos = pedidoService.getPedidosMasLejanosPorEmpresa();
         return pedidos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pedidos);
     }
 
-
+    //5) Listar todos los pedidos cuya ruta estimada cruce más de 2 zonas de reparto.
+    @GetMapping("/pedidosConMasDeDosZonas")
+    public ResponseEntity<List<PedidoRutaDTO>> obtenerPedidosConMasDeDosZonas() {
+        List<PedidoRutaDTO> pedidos = pedidoService.getPedidosConMasDeDosZonas();
+        return pedidos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pedidos);
+    }
 
 
 }

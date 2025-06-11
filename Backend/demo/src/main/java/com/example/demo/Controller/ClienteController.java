@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.ClienteLejanoDTO;
 import com.example.demo.Entity.Cliente;
 import com.example.demo.Entity.ZonaCobertura;
 import com.example.demo.Service.ClienteService;
@@ -76,12 +77,6 @@ public class ClienteController {
         return clienteService.obtenerClienteMayorGasto();
     }
 
-    @GetMapping("/zonaCobertura/{idCliente}")
-    public ResponseEntity<ZonaCobertura> verificarZonaDeCobertura(@PathVariable Integer idCliente) {
-        ZonaCobertura zona = clienteService.verificarZonaDeCliente(idCliente);
-        return zona != null ? ResponseEntity.ok(zona) : ResponseEntity.notFound().build();
-    }
-
     @GetMapping("/fueraDeCobertura")
     public ResponseEntity<List<Integer>> clientesFueraDeRadio(
             @RequestParam(defaultValue = "5000") Double distancia) {
@@ -89,6 +84,17 @@ public class ClienteController {
         return clientes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(clientes);
     }
 
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //2) Determinar si un cliente se encuentra dentro de una zona de cobertura.
+    @GetMapping("/zonaCobertura/{idCliente}")
+    public ResponseEntity<String> verificarZonaDeCobertura(@PathVariable Integer idCliente) {
+        String zona = clienteService.verificarZonaDeCliente(idCliente);
+        return zona != null ? ResponseEntity.ok(zona) : ResponseEntity.notFound().build();
+    }
 
+    @GetMapping("/clientesLejanos")
+    public List<ClienteLejanoDTO> getClientesLejanosDeTodasLasEmpresas() {
+        return clienteService.getClientesLejanosDeTodasLasEmpresas();
+    }
 
 }

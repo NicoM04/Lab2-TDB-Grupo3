@@ -22,7 +22,7 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
     public Repartidor crear(Repartidor repartidor) {
         String sql = "INSERT INTO repartidor (nombre_repartidor, rut, telefono, fecha_contratacion, activo, cantidad_entregas) " +
                 "VALUES (:nombre_repartidor, :rut, :telefono, :fecha_contratacion, :activo, :cantidad_entregas)";
-        String wkt = repartidor.getUbicacion() != null ? repartidor.getUbicacion().toText() : null;
+        String wkt = repartidor.getUbicacion_actual() != null ? repartidor.getUbicacion_actual().toText() : null;
         try (var con = sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
                     .addParameter("nombre_repartidor", repartidor.getNombre_repartidor())
@@ -141,6 +141,35 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
         } catch (Exception e) {
             System.out.println("Error al obtener los mejores repartidores: " + e.getMessage());
             return null;
+        }
+    }
+
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //3) Calcular la distancia total recorrida por un repartidor en el último mes.
+    @Override
+    public Double obtenerDistanciaTotalRecorridaEnUltimoMes(int idRepartidor, int ultimosMeses) {
+        String sql = """
+        SELECT SUM(ST_Length(ruta_estimada::geography)) AS distancia_total_metros
+        FROM pedido
+        WHERE id_repartidor = :idRepartidor
+          AND fecha_entrega IS NOT NULL
+          AND fecha_entrega >= (CURRENT_DATE - INTERVAL ':ultimosMeses months')
+          AND fecha_entrega <= CURRENT_DATE
+          AND estado = 'Finalizado'
+    """;
+
+        try (var con = sql2o.open()) {
+            // Debido a que no se puede parametrizar directamente el INTERVAL en SQL, reemplazamos :ultimosMeses manualmente
+            String sqlFinal = sql.replace(":ultimosMeses", String.valueOf(ultimosMeses));
+
+            Double distanciaTotal = con.createQuery(sqlFinal)
+                    .addParameter("idRepartidor", idRepartidor)
+                    .executeScalar(Double.class);
+
+            return distanciaTotal != null ? distanciaTotal : 0.0;
+        } catch (Exception e) {
+            System.err.println("Error al calcular distancia total recorrida: " + e.getMessage());
+            return 0.0;
         }
     }
 

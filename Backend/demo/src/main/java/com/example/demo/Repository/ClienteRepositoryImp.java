@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.ClienteLejanoDTO;
 import com.example.demo.Entity.Cliente;
 import com.example.demo.Entity.ZonaCobertura;
 import com.example.demo.config.InputVerificationService;
@@ -163,19 +164,21 @@ public class ClienteRepositoryImp implements ClienteRepository {
     }
 
     @Override
-    public ZonaCobertura verificarZonaDeCliente(Integer idCliente) {
+    public List<Integer> getClientesFueraDeRadio(Double distanciaMetros) {
         String sql = """
-        SELECT z.zona_id, z.nombre, ST_AsText(z.geom) AS zona_text
-        FROM zona_cobertura z
-        JOIN cliente c ON ST_Within(c.ubicacion, z.geom)
-        WHERE c.id_cliente = :idCliente
+        SELECT c.id_cliente
+        FROM cliente c
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM empresas_asociadas e
+            WHERE ST_Distance(c.ubicacion, e.ubicacion) < :distancia
+        )
     """;
 
         try (Connection conn = sql2o.open()) {
-            ResultadoZona resultado = conn.createQuery(sql)
-                    .addParameter("idCliente", idCliente)
-                    .executeAndFetchFirst(ResultadoZona.class);
-            return resultado != null ? resultado.toZonaCobertura() : null;
+            return conn.createQuery(sql)
+                    .addParameter("distancia", distanciaMetros)
+                    .executeScalarList(Integer.class);
         }
     }
 
@@ -197,27 +200,50 @@ public class ClienteRepositoryImp implements ClienteRepository {
         }
     }
 
+
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //2) Determinar si un cliente se encuentra dentro de una zona de cobertura.
     @Override
-    public List<Integer> getClientesFueraDeRadio(Double distanciaMetros) {
+    public String verificarZonaDeCliente(Integer idCliente) {
         String sql = """
-        SELECT c.id_cliente
+    SELECT z.nombre
+    FROM zonas_cobertura z
+    JOIN cliente c ON ST_Within(c.ubicacion, z.geom)
+    WHERE c.id_cliente = :idCliente
+    """;
+
+        try (Connection conn = sql2o.open()) {
+            String nombreZona = conn.createQuery(sql)
+                    .addParameter("idCliente", idCliente)
+                    .executeAndFetchFirst(String.class);
+            return nombreZona; // devuelve null si no hay zona que contenga al cliente
+        }
+    }
+
+    //6)Determinar los clientes que están a más de 5km de cualquier empresa
+    @Override
+    public List<ClienteLejanoDTO> getClientesLejanosDeTodasLasEmpresas() {
+        String sql = """
+        SELECT 
+            c.id_cliente AS idCliente,
+            c.nombre_cliente AS nombreCliente,
+            ST_AsText(c.ubicacion) AS ubicacion
         FROM cliente c
         WHERE NOT EXISTS (
             SELECT 1
             FROM empresas_asociadas e
-            WHERE ST_Distance(c.ubicacion, e.ubicacion) < :distancia
+            WHERE ST_DWithin(
+                c.ubicacion::geography,
+                e.ubicacion::geography,
+                5000 -- 5 km en metros
+            )
         )
     """;
 
-        try (Connection conn = sql2o.open()) {
-            return conn.createQuery(sql)
-                    .addParameter("distancia", distanciaMetros)
-                    .executeScalarList(Integer.class);
+        try (var con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .executeAndFetch(ClienteLejanoDTO.class);
         }
     }
-
-
-
-
 
 }

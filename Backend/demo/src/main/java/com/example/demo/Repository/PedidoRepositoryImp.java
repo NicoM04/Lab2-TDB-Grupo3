@@ -1,6 +1,8 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.PedidoCercanoDTO;
 import com.example.demo.DTO.PedidoCompletoDTO;
+import com.example.demo.DTO.PedidoRutaDTO;
 import com.example.demo.DTO.ResumenPedidoDTO;
 import com.example.demo.Entity.Pedido;
 import com.example.demo.Repository.PedidoRepository;
@@ -234,27 +236,99 @@ public class PedidoRepositoryImp implements PedidoRepository {
         }
     }
 
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+
+    //1) Encontrar los 5 puntos de entrega más cercanos a una empresa asociada.
     @Override
-    public List<Pedido> getPedidosMasLejanosPorEmpresa() {
+    public List<PedidoCercanoDTO> getPedidosMasCercanosEmpresa(Integer idEmpresa, int limite) {
         String sql = """
-        SELECT DISTINCT ON (p.id_empresa)
-               p.*
-        FROM pedido p
-        JOIN cliente c ON p.id_cliente = c.id_cliente
-        JOIN empresas_asociadas e ON p.id_empresa = e.id_empresa
-        WHERE c.ubicacion IS NOT NULL AND e.ubicacion IS NOT NULL
-        ORDER BY p.id_empresa, ST_Distance(c.ubicacion, e.ubicacion) DESC
+    SELECT 
+        p.id_pedido AS idPedido,
+        c.id_cliente AS idCliente,
+        ea.id_empresa AS idEmpresa,
+        ea.nombre_empresa AS nombreEmpresa,
+        ST_AsText(ST_EndPoint(p.ruta_estimada)) AS puntoEntrega,
+        ST_AsText(ea.ubicacion) AS ubicacionEmpresa,
+        ST_Distance(
+            ST_EndPoint(p.ruta_estimada)::geography,
+            ea.ubicacion::geography
+        ) AS distanciaMetros
+    FROM pedido p
+    JOIN cliente c ON p.id_cliente = c.id_cliente
+    JOIN empresas_asociadas ea ON p.id_empresa = ea.id_empresa
+    WHERE p.ruta_estimada IS NOT NULL
+      AND ea.id_empresa = :idEmpresa
+      AND p.estado NOT IN ('Finalizado', 'Cancelado') 
+    ORDER BY distanciaMetros
+    LIMIT :limite
     """;
 
-        try (Connection conn = sql2o.open()) {
-            return conn.createQuery(sql)
-                    .executeAndFetch(Pedido.class);
+        try (var con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("idEmpresa", idEmpresa)
+                    .addParameter("limite", limite)
+                    .executeAndFetch(PedidoCercanoDTO.class);
         }
     }
 
+    //4) Identificar el punto de entrega más lejano desde cada empresa asociada.
+    @Override
+    public List<PedidoCercanoDTO> getPedidosMasLejanosPorEmpresa() {
+        String sql = """
+    SELECT DISTINCT ON (e.id_empresa)
+        p.id_pedido AS idPedido,
+        c.id_cliente AS idCliente,
+        e.id_empresa AS idEmpresa,
+        e.nombre_empresa AS nombreEmpresa,
+        ST_AsText(ST_EndPoint(p.ruta_estimada)) AS puntoEntrega,
+        ST_AsText(e.ubicacion) AS ubicacionEmpresa,
+        ST_Distance(
+            e.ubicacion::geography,
+            ST_EndPoint(p.ruta_estimada)::geography
+        ) AS distanciaMetros
+    FROM pedido p
+    JOIN cliente c ON p.id_cliente = c.id_cliente
+    JOIN empresas_asociadas e ON p.id_empresa = e.id_empresa
+    WHERE p.ruta_estimada IS NOT NULL
+      AND e.ubicacion IS NOT NULL
+      AND p.estado NOT IN ('Finalizado', 'Cancelado')
+    ORDER BY e.id_empresa, distanciaMetros DESC
+    """;
 
+        try (var con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .executeAndFetch(PedidoCercanoDTO.class);
+        }
+    }
 
+    @Override
+    public List<PedidoRutaDTO> getPedidosConMasDeDosZonas() {
+        String sql = """
+        SELECT 
+            p.id_pedido AS idPedido,
+            p.id_cliente AS idCliente,
+            p.id_empresa AS idEmpresa,
+            e.nombre_empresa AS nombreEmpresa,
+            ST_AsText(ST_EndPoint(p.ruta_estimada)) AS puntoEntrega,
+            ST_AsText(e.ubicacion) AS ubicacionEmpresa,
+            ST_Distance(
+                ST_EndPoint(p.ruta_estimada)::geography,
+                e.ubicacion::geography
+            ) AS distanciaMetros,
+            COUNT(z.zona_id) AS cantidadZonas
+        FROM pedido p
+        JOIN zonas_cobertura z ON ST_Intersects(p.ruta_estimada, z.geom)
+        JOIN empresas_asociadas e ON p.id_empresa = e.id_empresa
+        WHERE p.ruta_estimada IS NOT NULL
+        GROUP BY p.id_pedido, p.id_cliente, p.id_empresa, e.nombre_empresa, e.ubicacion, p.ruta_estimada
+        HAVING COUNT(z.zona_id) > 2
+    """;
 
+        try (var con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .executeAndFetch(PedidoRutaDTO.class);
+        }
+    }
 
 
 }

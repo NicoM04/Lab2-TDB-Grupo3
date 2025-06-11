@@ -1,23 +1,25 @@
 SET client_encoding = 'UTF8';
 
-INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direccion, telefono, fecha_registro) VALUES
-('Ana Torres', 'contraseña', 'ana.torres@prueba.com', 'Av. Siempre Viva 123', '912345678', '2019-05-12'),
-('Luis Rojas', 'contraseña', 'luis.rojas@example.com', 'Calle Falsa 456', '912345679', '2020-03-10'),
-('Carla Vega', 'contraseña', 'carla.vega@example.com', 'Jr. Los Álamos 22', '912345680', '2021-07-25'),
-('Pedro Sáez', 'contraseña', 'pedro.saez@example.com', 'Av. Las Flores 555', '912345681', '2022-01-13'),
-('Lucía Díaz', 'contraseña', 'lucia.diaz@example.com', 'Calle Lima 332', '912345682', '2023-02-01'),
-('Manuel Salas', 'contraseña', 'manuel.salas@example.com', 'Jr. Central 99', '912345683', '2020-09-20'),
-('Sofía Herrera', 'contraseña', 'sofia.herrera@example.com', 'Av. Norte 118', '912345684', '2021-11-10'),
-('Rodrigo Ruiz', 'contraseña', 'rodrigo.ruiz@example.com', 'Pasaje Sol 11', '912345685', '2019-08-30'),
-('Fernanda Pino', 'contraseña', 'fernanda.pino@example.com', 'Calle Sur 80', '912345686', '2023-06-18'),
-('Javier Soto', 'contraseña', 'javier.soto@example.com', 'Av. del Mar 300', '912345687', '2024-01-09');
+INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direccion, telefono, fecha_registro, ubicacion) VALUES
+('Ana Torres', 'contraseña', 'ana.torres@prueba.com', 'Av. Siempre Viva 123', '912345678', '2019-05-12', ST_GeomFromText('POINT(-70.6506 -33.4372)', 4326)), -- Santiago Centro
+('Luis Rojas', 'contraseña', 'luis.rojas@example.com', 'Calle Falsa 456', '912345679', '2020-03-10', ST_GeomFromText('POINT(-70.6693 -33.4523)', 4326)), -- Providencia
+('Carla Vega', 'contraseña', 'carla.vega@example.com', 'Jr. Los Álamos 22', '912345680', '2021-07-25', ST_GeomFromText('POINT(-70.6132 -33.5010)', 4326)), -- La Florida
+('Pedro Sáez', 'contraseña', 'pedro.saez@example.com', 'Av. Las Flores 555', '912345681', '2022-01-13', ST_GeomFromText('POINT(-70.7852 -33.5950)', 4326)), -- Maipú
+('Lucía Díaz', 'contraseña', 'lucia.diaz@example.com', 'Calle Lima 332', '912345682', '2023-02-01', ST_GeomFromText('POINT(-70.5455 -33.4160)', 4326)), -- Peñalolén
+('Manuel Salas', 'contraseña', 'manuel.salas@example.com', 'Jr. Central 99', '912345683', '2020-09-20', ST_GeomFromText('POINT(-70.6692 -33.3811)', 4326)), -- Recoleta
+('Sofía Herrera', 'contraseña', 'sofia.herrera@example.com', 'Av. Norte 118', '912345684', '2021-11-10', ST_GeomFromText('POINT(-70.7431 -33.4366)', 4326)), -- Pudahuel
+('Rodrigo Ruiz', 'contraseña', 'rodrigo.ruiz@example.com', 'Pasaje Sol 11', '912345685', '2019-08-30', ST_GeomFromText('POINT(-70.6565 -33.4569)', 4326)), -- Ñuñoa
+('Fernanda Pino', 'contraseña', 'fernanda.pino@example.com', 'Calle Sur 80', '912345686', '2023-06-18', ST_GeomFromText('POINT(-70.7082 -33.5202)', 4326)), -- San Bernardo
+('Javier Soto', 'contraseña', 'javier.soto@example.com', 'Av. del Mar 300', '912345687', '2024-01-09', ST_GeomFromText('POINT(-70.5812 -33.6002)', 4326)); -- Puente Alto
 
-INSERT INTO Empresas_Asociadas (nombre_empresa, rut_empresa, correo_contacto, direccion) VALUES
-('Estudio Jurídico LegalPro', '76451234-5', 'contacto@legalpro.com', 'Av. Libertad 101'),
-('Notaría San Martín', '76321233-8', 'info@notariasanmartin.com', 'Jr. Constitución 201'),
-('Corporación Educativa EducaTec', '76578921-2', 'admin@educatec.com', 'Calle Sabiduría 350'),
-('Contadores Asociados LimaSur', '76987453-9', 'info@limasurcontadores.com', 'Av. Contable 459'),
-('Ministerio de Trámites Rápidos', '76452345-6', 'tramites@ministerio.gob', 'Plaza Central 1');
+
+INSERT INTO Empresas_Asociadas (nombre_empresa, rut_empresa, correo_contacto, direccion, ubicacion) VALUES
+('Estudio Jurídico LegalPro', '76451234-5', 'contacto@legalpro.com', 'Av. Libertad 101', ST_GeomFromText('POINT(-70.6420 -33.4206)', 4326)), -- Independencia
+('Notaría San Martín', '76321233-8', 'info@notariasanmartin.com', 'Jr. Constitución 201', ST_GeomFromText('POINT(-70.7200 -33.4500)', 4326)), -- Cerrillos
+('Corporación Educativa EducaTec', '76578921-2', 'admin@educatec.com', 'Calle Sabiduría 350', ST_GeomFromText('POINT(-70.6167 -33.4010)', 4326)), -- Macul
+('Contadores Asociados LimaSur', '76987453-9', 'info@limasurcontadores.com', 'Av. Contable 459', ST_GeomFromText('POINT(-70.7371 -33.5922)', 4326)), -- El Bosque
+('Ministerio de Trámites Rápidos', '76452345-6', 'tramites@ministerio.gob', 'Plaza Central 1', ST_GeomFromText('POINT(-70.5745 -33.4501)', 4326)); -- La Reina
+
 
 INSERT INTO ProductoServicio (nombre_producto, descripcion, categoria, precio_unitario, stock) VALUES
 -- Empresarial (2)
@@ -61,12 +63,13 @@ INSERT INTO ProductoServicio (nombre_producto, descripcion, categoria, precio_un
 ('Servicio express legal', 'Entrega urgente de documentos judiciales', 'Judicial', 3500.00, 50); -- 20
 
 
-INSERT INTO Repartidores (nombre_repartidor, rut, telefono, fecha_contratacion, activo, cantidad_entregas) VALUES
-('Carlos Medina', '75892345-1', '912300001', '2018-06-10', TRUE, 4),
-('María Flores', '76983456-2', '912300002', '2018-02-15', TRUE, 6),
-('José Ramírez', '74876321-3', '912300003', '2018-11-03', TRUE, 2),
-('Diana Quispe', '73897542-4', '912300004', '2018-08-20', TRUE, 1),
-('Andrés Castillo', '72839456-5', '912300005', '2018-04-01', TRUE, 3);
+INSERT INTO Repartidores (nombre_repartidor, rut, telefono, fecha_contratacion, activo, cantidad_entregas, ubicacion_actual) VALUES
+('Carlos Medina', '75892345-1', '912300001', '2018-06-10', TRUE, 4, ST_GeomFromText('POINT(-70.6500 -33.5000)', 4326)), -- La Florida
+('María Flores', '76983456-2', '912300002', '2018-02-15', TRUE, 6, ST_GeomFromText('POINT(-70.6770 -33.5861)', 4326)), -- San Ramón
+('José Ramírez', '74876321-3', '912300003', '2018-11-03', TRUE, 2, ST_GeomFromText('POINT(-70.7064 -33.4573)', 4326)), -- Lo Espejo
+('Diana Quispe', '73897542-4', '912300004', '2018-08-20', TRUE, 1, ST_GeomFromText('POINT(-70.5710 -33.4910)', 4326)), -- Peñalolén
+('Andrés Castillo', '72839456-5', '912300005', '2018-04-01', TRUE, 3, ST_GeomFromText('POINT(-70.7600 -33.4560)', 4326)); -- Maipú
+
 
 INSERT INTO Calificaciones (id_repartidor, puntuacion, comentario, fecha_calificacion) VALUES
 -- Carlos Medina (4)
@@ -185,5 +188,15 @@ INSERT INTO Detalle_de_pedido (id_producto, id_pedido, cantidad, subtotal) VALUE
 
 (4, 20, 16, 35200),
 (6, 20, 5, 14000);
+
+-- Actualizar LineString a cada pedido
+UPDATE Pedido p
+SET ruta_estimada = ST_MakeLine(
+    ARRAY[
+        e.ubicacion,
+        c.ubicacion
+    ])
+FROM Empresas_Asociadas e, Cliente c
+WHERE p.id_empresa = e.id_empresa AND p.id_cliente = c.id_cliente;
 
 

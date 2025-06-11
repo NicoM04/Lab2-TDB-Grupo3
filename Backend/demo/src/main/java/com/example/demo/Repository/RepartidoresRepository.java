@@ -14,4 +14,8 @@ public interface RepartidoresRepository {
     public List<Map<String, Object>> obtenerTiempoPromedioEntregaPorRepartidor(int page, int size);
     public List<Map<String, Object>> obtenerTop3RepartidoresConMejorRendimiento();
 
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //3) Calcular la distancia total recorrida por un repartidor en el último mes.
+    Double obtenerDistanciaTotalRecorridaEnUltimoMes(int idRepartidor, int ultimosMeses);
+
 }

@@ -43,4 +43,10 @@ public class RepartidorService {
         return repartidoresRepository.obtenerTop3RepartidoresConMejorRendimiento();
     }
 
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //3) Calcular la distancia total recorrida por un repartidor en el último mes.
+    public Double obtenerDistanciaTotalRecorridaEnUltimoMes(int idRepartidor, int ultimosMeses){
+        return repartidoresRepository.obtenerDistanciaTotalRecorridaEnUltimoMes(idRepartidor, ultimosMeses);
+    }
+
 }

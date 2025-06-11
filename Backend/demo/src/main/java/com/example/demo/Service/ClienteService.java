@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.DTO.ClienteLejanoDTO;
 import com.example.demo.Entity.Cliente;
 import com.example.demo.Entity.ZonaCobertura;
 import com.example.demo.Repository.ClienteRepository;
@@ -126,12 +127,19 @@ public class ClienteService {
         return clienteRepository.getClienteMayorGasto();
     }
 
-    public ZonaCobertura verificarZonaDeCliente(Integer idCliente) {
+    public List<Integer> getClientesFueraDeRadio(Double distanciaMetros) {
+        return clienteRepository.getClientesFueraDeRadio(distanciaMetros);
+    }
+
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //2) Determinar si un cliente se encuentra dentro de una zona de cobertura.
+    public String verificarZonaDeCliente(Integer idCliente) {
         return clienteRepository.verificarZonaDeCliente(idCliente);
     }
 
-    public List<Integer> getClientesFueraDeRadio(Double distanciaMetros) {
-        return clienteRepository.getClientesFueraDeRadio(distanciaMetros);
+    //6)Determinar los clientes que están a más de 5km de cualquier empresa
+    public List<ClienteLejanoDTO> getClientesLejanosDeTodasLasEmpresas(){
+        return clienteRepository.getClientesLejanosDeTodasLasEmpresas();
     }
 
 

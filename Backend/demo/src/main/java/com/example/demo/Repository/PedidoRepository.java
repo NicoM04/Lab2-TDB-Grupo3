@@ -1,6 +1,8 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.PedidoCercanoDTO;
 import com.example.demo.DTO.PedidoCompletoDTO;
+import com.example.demo.DTO.PedidoRutaDTO;
 import com.example.demo.DTO.ResumenPedidoDTO;
 import com.example.demo.Entity.Pedido;
 
@@ -24,8 +26,14 @@ public interface PedidoRepository {
 
     List<Pedido> getPedidosMasCercanos(Integer idEmpresa, int limite);
 
-    List<Pedido> getPedidosMasLejanosPorEmpresa();
+    //-------------------------- CONSULTAS LAB 2 -------------------------------
+    //1) Encontrar los 5 puntos de entrega más cercanos a una empresa asociada.
+    List<PedidoCercanoDTO> getPedidosMasCercanosEmpresa(Integer idEmpresa, int limite);
 
+    //4) Identificar el punto de entrega más lejano desde cada empresa asociada.
+    List<PedidoCercanoDTO> getPedidosMasLejanosPorEmpresa();
 
+    //5) Listar todos los pedidos cuya ruta estimada cruce más de 2 zonas de reparto.
+    List<PedidoRutaDTO> getPedidosConMasDeDosZonas();
 
 }

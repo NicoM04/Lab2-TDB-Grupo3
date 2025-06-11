@@ -3,6 +3,8 @@ package com.example.demo.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.LineString;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +22,5 @@ public class Pedido {
     private LocalDate fecha_entrega; //LE COLOQUE OPTIONAL PARA MANEJAR QUE EL PEDIDO SEA
     private String estado;
     private Boolean urgente;
+    private LineString ruta;
 }

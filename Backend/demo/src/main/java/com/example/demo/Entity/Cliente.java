@@ -18,6 +18,5 @@ public class Cliente {
         private String direccion;
         private String telefono;
         private LocalDate fecha_registro;
-
         private Point ubicacion;
 }
