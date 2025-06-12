@@ -22,8 +22,8 @@ public class ClienteRepositoryImp implements ClienteRepository {
 
     @Override
     public void crear(Cliente cliente) {
-        String query = "INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direccion, telefono, fecha_registro) " +
-                "VALUES (:nombre_cliente, :contrasena_cliente, :correo_cliente, :direccion, :telefono, :fecha_registro)";
+        String query = "INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direccion, telefono, fecha_registro, ubicacion) " +
+                "VALUES (:nombre_cliente, :contrasena_cliente, :correo_cliente, :direccion, :telefono, :fecha_registro, ST_GeomFromText(:ubicacion, 4326))";
         try (var con = sql2o.open()) {
             String wkt = cliente.getUbicacion() != null ? cliente.getUbicacion().toText() : null;
             con.createQuery(query)

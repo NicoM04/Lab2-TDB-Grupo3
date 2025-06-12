@@ -1,13 +1,18 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.ClienteDTO;
 import com.example.demo.DTO.ClienteLejanoDTO;
 import com.example.demo.Entity.Cliente;
 import com.example.demo.Entity.ZonaCobertura;
 import com.example.demo.Service.ClienteService;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -18,10 +23,22 @@ public class ClienteController {
 
     @Autowired
     private ClienteService clienteService;
-    
+
     @PostMapping("/register")
-    public ResponseEntity<Object> createUser(@RequestBody Cliente user) {
-        return clienteService.crearCliente(user);
+    public ResponseEntity<Object> createUser(@RequestBody ClienteDTO dto) {
+        GeometryFactory factory = new GeometryFactory();
+        Point ubicacion = factory.createPoint(new Coordinate(dto.getLon(), dto.getLat()));
+
+        Cliente cliente = new Cliente();
+        cliente.setNombre_cliente(dto.getNombre_cliente());
+        cliente.setContrasena_cliente(dto.getContrasena_cliente());
+        cliente.setCorreo_cliente(dto.getCorreo_cliente());
+        cliente.setDireccion(dto.getDireccion());
+        cliente.setTelefono(dto.getTelefono());
+        cliente.setFecha_registro(LocalDate.parse(dto.getFecha_registro()));
+        cliente.setUbicacion(ubicacion);
+
+        return clienteService.crearCliente(cliente);
     }
 
     @PostMapping("/login")
