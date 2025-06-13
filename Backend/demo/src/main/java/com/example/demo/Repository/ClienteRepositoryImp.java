@@ -5,6 +5,7 @@ import com.example.demo.Entity.Cliente;
 import com.example.demo.Entity.ZonaCobertura;
 import com.example.demo.config.InputVerificationService;
 import com.example.demo.config.JwtMiddlewareService;
+import org.locationtech.jts.geom.Point;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.sql2o.Connection;
@@ -93,17 +94,47 @@ public class ClienteRepositoryImp implements ClienteRepository {
 
     @Override
     public ResponseEntity<Cliente> findByCorreo(String correo) {
+        String sql = """
+        SELECT 
+            id_cliente, nombre_cliente, contrasena_cliente, correo_cliente, 
+            direccion, telefono, fecha_registro,
+            ST_AsText(ubicacion) as ubicacion 
+        FROM cliente 
+        WHERE correo_cliente = :correo
+    """;
+
         try (Connection conn = sql2o.open()) {
-            Cliente cliente = conn.createQuery("SELECT * FROM cliente WHERE correo_cliente = :correo")
+            var query = conn.createQuery(sql)
                     .addParameter("correo", correo)
-                    .executeAndFetchFirst(Cliente.class);
-            if (cliente == null) {
-                return ResponseEntity.status(404).body(null);  // Cliente no encontrado
+                    .executeAndFetchTable();
+
+            if (query.rows().isEmpty()) {
+                return ResponseEntity.status(404).body(null);
             }
-            return ResponseEntity.ok(cliente);  // Cliente encontrado
+
+            var row = query.rows().get(0);
+            Cliente cliente = new Cliente();
+            cliente.setId_cliente(row.getInteger("id_cliente"));
+            cliente.setNombre_cliente(row.getString("nombre_cliente"));
+            cliente.setContrasena_cliente(row.getString("contrasena_cliente"));
+            cliente.setCorreo_cliente(row.getString("correo_cliente"));
+            cliente.setDireccion(row.getString("direccion"));
+            cliente.setTelefono(row.getString("telefono"));
+            cliente.setFecha_registro(row.getObject("fecha_registro"));
+
+            // Convertimos de WKT a Point
+            String ubicacionWKT = row.getString("ubicacion");
+            if (ubicacionWKT != null) {
+                var reader = new org.locationtech.jts.io.WKTReader();
+                Point point = (Point) reader.read(ubicacionWKT);
+                cliente.setUbicacion(point);
+            }
+
+            return ResponseEntity.ok(cliente);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(null);  // Error interno del servidor
+            return ResponseEntity.status(500).body(null);
         }
     }
 
