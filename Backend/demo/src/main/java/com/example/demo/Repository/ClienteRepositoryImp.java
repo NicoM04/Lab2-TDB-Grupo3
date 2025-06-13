@@ -120,7 +120,6 @@ public class ClienteRepositoryImp implements ClienteRepository {
             cliente.setCorreo_cliente(row.getString("correo_cliente"));
             cliente.setDireccion(row.getString("direccion"));
             cliente.setTelefono(row.getString("telefono"));
-            cliente.setFecha_registro(row.getObject("fecha_registro"));
 
             // Convertimos de WKT a Point
             String ubicacionWKT = row.getString("ubicacion");

@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 
+import com.example.demo.DTO.RepartidorDTO;
 import com.example.demo.Entity.Repartidor;
 import com.example.demo.Repository.RepartidoresRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class RepartidorService {
         return repartidoresRepository.crear(repartidor);
     }
 
-    public List<Repartidor> getall(int page, int size) {
+    public List<RepartidorDTO> getall(int page, int size) {
         return repartidoresRepository.getAll(page, size);
     }
 

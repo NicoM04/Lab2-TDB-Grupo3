@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 
+import com.example.demo.DTO.RepartidorDTO;
 import com.example.demo.Entity.Repartidor;
 import com.example.demo.Service.RepartidorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class RepartidorController {
     }
 
     @GetMapping("/getAll")
-    public List<Repartidor> obtenerTodos(@RequestParam(defaultValue = "1") int page,
-                                         @RequestParam(defaultValue = "10") int size) {
+    public List<RepartidorDTO> obtenerTodos(@RequestParam(defaultValue = "1") int page,
+                                            @RequestParam(defaultValue = "10") int size) {
         return repartidorService.getall(page, size);
     }
 

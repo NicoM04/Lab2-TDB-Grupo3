@@ -1,23 +1,21 @@
-package com.example.demo.Entity;
+package com.example.demo.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import org.locationtech.jts.geom.Point;
-import java.time.LocalDate;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Repartidor {
+public class RepartidorDTO {
     private Integer id_repartidor;
     private String nombre_repartidor;
     private String rut;
     private String telefono;
-    private LocalDate fecha_contratacion;
+    private String fecha_contratacion; // en formato ISO
     private Boolean activo;
     private Integer cantidad_entregas;
 
-    private Point ubicacion_actual;
+    private double latitud;
+    private double longitud;
 }

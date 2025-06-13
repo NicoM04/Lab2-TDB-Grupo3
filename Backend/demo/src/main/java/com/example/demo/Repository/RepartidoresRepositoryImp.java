@@ -1,16 +1,21 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.RepartidorDTO;
 import com.example.demo.Entity.Repartidor;
 //import org.sql2o.Connection;
+import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.locationtech.jts.geom.Point;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
+
 
 @Repository
 public class RepartidoresRepositoryImp implements RepartidoresRepository {
@@ -40,16 +45,54 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
     }
 
     @Override
-    public List<Repartidor> getAll(int page, int size) {
+    public List<RepartidorDTO> getAll(int page, int size) {
         int offset = (page - 1) * size;
-        String sql = "SELECT * FROM repartidores LIMIT :size OFFSET :offset";
-        try (var con = sql2o.open()) {
-            return con.createQuery(sql)
+
+        String sql = """
+        SELECT 
+            id_repartidor, nombre_repartidor, rut, telefono, 
+            fecha_contratacion, activo, cantidad_entregas, 
+            ST_AsText(ubicacion_actual) AS ubicacion
+        FROM repartidores
+        LIMIT :size OFFSET :offset
+    """;
+
+        try (Connection con = sql2o.open()) {
+            var query = con.createQuery(sql)
                     .addParameter("size", size)
                     .addParameter("offset", offset)
-                    .executeAndFetch(Repartidor.class);
+                    .executeAndFetchTable();
+
+            List<RepartidorDTO> resultado = new ArrayList<>();
+            var reader = new org.locationtech.jts.io.WKTReader();
+
+            for (var row : query.rows()) {
+                RepartidorDTO dto = new RepartidorDTO();
+                dto.setId_repartidor(row.getInteger("id_repartidor"));
+                dto.setNombre_repartidor(row.getString("nombre_repartidor"));
+                dto.setRut(row.getString("rut"));
+                dto.setTelefono(row.getString("telefono"));
+                dto.setActivo(row.getBoolean("activo"));
+                dto.setCantidad_entregas(row.getInteger("cantidad_entregas"));
+
+                String ubicacionWKT = row.getString("ubicacion");
+                if (ubicacionWKT != null) {
+                    Point point = (Point) reader.read(ubicacionWKT);
+                    dto.setLatitud(point.getY());
+                    dto.setLongitud(point.getX());
+                }
+
+                resultado.add(dto);
+            }
+
+            return resultado;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
     }
+
 
 
     @Override
