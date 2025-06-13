@@ -1,6 +1,6 @@
 -- 1. Crear la base de datos
 
-CREATE DATABASE "lab1_grupo3"
+CREATE DATABASE "lab2_grupo3"
     WITH
     OWNER = postgres
     ENCODING = 'UTF8'
@@ -13,7 +13,11 @@ CREATE DATABASE "lab1_grupo3"
     TEMPLATE = template0;
 
 -- 2. Conectarse a la base de datos
-\connect lab1_grupo3
+\connect lab2_grupo3
+
+-- Activar extensión PostGIS
+CREATE EXTENSION IF NOT EXISTS postgis;
+
 
 -- 3. Crear las tablas
 
@@ -109,7 +113,22 @@ CREATE TABLE Calificaciones (
 );
 
 
--- Procedimiento almacenado: Registrar un pedido completo
+-- Agregar campos de ubicación geográfica a las tablas
+ALTER TABLE cliente ADD COLUMN ubicacion GEOMETRY(Point, 4326);
+ALTER TABLE repartidores ADD COLUMN ubicacion_actual GEOMETRY(Point, 4326);
+ALTER TABLE empresas_asociadas ADD COLUMN ubicacion GEOMETRY(Point, 4326);
+ALTER TABLE pedido ADD COLUMN ruta_estimada GEOMETRY(LineString, 4326); --ruta
+
+-- Crear tabla de zonas de cobertura
+CREATE TABLE zonas_cobertura (
+    zona_id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    tipo VARCHAR(100),
+    geom GEOMETRY(Polygon, 4326)
+);
+
+
+-- Procedimiento almacenado: Registrar un pedido completo con ruta estimada
 CREATE OR REPLACE PROCEDURE registrar_pedido_completo(
     p_id_cliente INT,
     p_id_empresa INT,
@@ -132,6 +151,8 @@ DECLARE
     v_precio DECIMAL(10,2);
     v_subtotal DECIMAL(10,2);
     v_total DECIMAL(10,2) := 0;
+    v_ubicacion_empresa GEOMETRY(Point, 4326);
+    v_ubicacion_cliente GEOMETRY(Point, 4326);
 BEGIN
     -- Calcular total del pedido recorriendo productos
     FOR i IN 1..array_length(p_productos, 1) LOOP
@@ -162,6 +183,25 @@ BEGIN
     )
     RETURNING id_pedido INTO v_id_pedido;
 
+    -- Obtener ubicaciones
+    SELECT ubicacion INTO v_ubicacion_empresa
+    FROM Empresas_Asociadas
+    WHERE id_empresa = p_id_empresa;
+
+    SELECT ubicacion INTO v_ubicacion_cliente
+    FROM Cliente
+    WHERE id_cliente = p_id_cliente;
+
+    -- Insertar ruta estimada si ambas ubicaciones son válidas
+    IF v_ubicacion_empresa IS NOT NULL AND v_ubicacion_cliente IS NOT NULL THEN
+        UPDATE Pedido
+        SET ruta_estimada = ST_MakeLine(ARRAY[
+            v_ubicacion_empresa,
+            v_ubicacion_cliente
+        ])
+        WHERE id_pedido = v_id_pedido;
+    END IF;
+
     -- Insertar detalles de pedido
     FOR i IN 1..array_length(p_productos, 1) LOOP
         v_id_producto := p_productos[i];
@@ -182,6 +222,11 @@ BEGIN
     END LOOP;
 END;
 $$;
+
+
+
+
+
 
 
 -- Procedimiento almacenado: Descontar stock al confirmar pedido (si aplica)
@@ -482,19 +527,4 @@ FOR EACH ROW
 EXECUTE FUNCTION validar_detalle_pedido();
 
 
--- Activar extensión PostGIS
-CREATE EXTENSION IF NOT EXISTS postgis;
 
--- Agregar campos de ubicación geográfica a las tablas
-ALTER TABLE cliente ADD COLUMN ubicacion GEOMETRY(Point, 4326);
-ALTER TABLE repartidores ADD COLUMN ubicacion_actual GEOMETRY(Point, 4326);
-ALTER TABLE empresas_asociadas ADD COLUMN ubicacion GEOMETRY(Point, 4326);
-ALTER TABLE pedido ADD COLUMN ruta_estimada GEOMETRY(LineString, 4326);
-
--- Crear tabla de zonas de cobertura
-CREATE TABLE zonas_cobertura (
-    zona_id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100),
-    tipo VARCHAR(100),
-    geom GEOMETRY(Polygon, 4326)
-);
