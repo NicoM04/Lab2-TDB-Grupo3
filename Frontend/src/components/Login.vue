@@ -48,6 +48,7 @@ export default {
       try {
         // Llamada al método loginCliente del servicio ClienteService
         const response = await ClienteService.loginCliente(this.email, this.password);
+        console.log("Login exitoso", response.data);
 
         // Si el login es exitoso, guarda el token en el localStorage
         localStorage.setItem("jwt", response.data);

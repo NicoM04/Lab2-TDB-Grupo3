@@ -102,14 +102,14 @@ public class ClienteService {
 
             String storedPassword = cliente.getContrasena_cliente();
 
-            if (correo_cliente.endsWith("@example.com")) {
-                if (contrasena_cliente.equals(storedPassword)) {
-                    String token = jwtMiddlewareService.generateToken(cliente);
-                    return ResponseEntity.ok(token);
-                } else {
-                    return ResponseEntity.status(401).body("Contraseña incorrecta.");
-                }
-            }
+//            if (correo_cliente.endsWith("@example.com")) {
+//                if (contrasena_cliente.equals(storedPassword)) {
+//                    String token = jwtMiddlewareService.generateToken(cliente);
+//                    return ResponseEntity.ok(token);
+//                } else {
+//                    return ResponseEntity.status(401).body("Contraseña incorrecta.");
+//                }
+//            }
 
             if (passwordEncoder.matches(contrasena_cliente, storedPassword)) {
                 String token = jwtMiddlewareService.generateToken(cliente);
