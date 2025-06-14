@@ -24,7 +24,7 @@ public class RepartidorService {
         return repartidoresRepository.getAll(page, size);
     }
 
-    public Repartidor findById(Integer id) {
+    public RepartidorDTO findById(Integer id) {
         return repartidoresRepository.findById(id);
     }
 

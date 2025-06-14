@@ -48,14 +48,24 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
     public List<RepartidorDTO> getAll(int page, int size) {
         int offset = (page - 1) * size;
 
-        String sql = """
+            String sql = """
         SELECT 
-            id_repartidor, nombre_repartidor, rut, telefono, 
-            fecha_contratacion, activo, cantidad_entregas, 
-            ST_AsText(ubicacion_actual) AS ubicacion
-        FROM repartidores
+            r.id_repartidor, 
+            r.nombre_repartidor, 
+            r.rut, 
+            r.telefono, 
+            r.fecha_contratacion, 
+            r.activo, 
+            r.cantidad_entregas, 
+            ST_AsText(r.ubicacion_actual) AS ubicacion,
+            AVG(c.puntuacion) AS puntuacion
+        FROM repartidores r
+        LEFT JOIN calificaciones c ON r.id_repartidor = c.id_repartidor
+        GROUP BY r.id_repartidor, r.nombre_repartidor, r.rut, r.telefono,
+                 r.fecha_contratacion, r.activo, r.cantidad_entregas, r.ubicacion_actual
         LIMIT :size OFFSET :offset
-    """;
+        """;
+
 
         try (Connection con = sql2o.open()) {
             var query = con.createQuery(sql)
@@ -75,13 +85,6 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
                 dto.setActivo(row.getBoolean("activo"));
                 dto.setCantidad_entregas(row.getInteger("cantidad_entregas"));
 
-                String ubicacionWKT = row.getString("ubicacion");
-                if (ubicacionWKT != null) {
-                    Point point = (Point) reader.read(ubicacionWKT);
-                    dto.setLatitud(point.getY());
-                    dto.setLongitud(point.getX());
-                }
-
                 resultado.add(dto);
             }
 
@@ -96,14 +99,52 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
 
 
     @Override
-    public Repartidor findById(Integer id) {
-        String sql = "SELECT * FROM repartidores WHERE id_repartidor = :id_repartidor";
+    public RepartidorDTO findById(Integer id) {
+        String sql = """
+    SELECT 
+        r.id_repartidor, 
+        r.nombre_repartidor, 
+        r.rut, 
+        r.telefono, 
+        r.fecha_contratacion, 
+        r.activo, 
+        r.cantidad_entregas, 
+        ST_AsText(r.ubicacion_actual) AS ubicacion,
+        AVG(c.puntuacion) AS puntuacion
+    FROM repartidores r
+    LEFT JOIN calificaciones c ON r.id_repartidor = c.id_repartidor
+    WHERE r.id_repartidor = :id_repartidor
+    GROUP BY r.id_repartidor, r.nombre_repartidor, r.rut, r.telefono,
+             r.fecha_contratacion, r.activo, r.cantidad_entregas, r.ubicacion_actual
+    """;
+
+
         try (var con = sql2o.open()) {
-            return con.createQuery(sql)
+            var row = con.createQuery(sql)
                     .addParameter("id_repartidor", id)
-                    .executeAndFetchFirst(Repartidor.class);
+                    .executeAndFetchTable()
+                    .rows()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (row == null) return null;
+
+            RepartidorDTO dto = new RepartidorDTO();
+            dto.setId_repartidor(row.getInteger("id_repartidor"));
+            dto.setNombre_repartidor(row.getString("nombre_repartidor"));
+            dto.setRut(row.getString("rut"));
+            dto.setTelefono(row.getString("telefono"));
+            dto.setActivo(row.getBoolean("activo"));
+            dto.setCantidad_entregas(row.getInteger("cantidad_entregas"));
+            return dto;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
+
 
     @Override
     public String update(Repartidor repartidor, Integer id) {

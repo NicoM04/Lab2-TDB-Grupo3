@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.EmpresaAsociadaDTO;
 import com.example.demo.Entity.EmpresasAsociadas;
 import com.example.demo.Service.EmpresasAsociadasService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class EmpresasAsociadasController {
 
     // Obtener todas las empresas
     @GetMapping
-    public List<EmpresasAsociadas> obtenerEmpresas(@RequestParam(defaultValue = "1") int page,
-                                                   @RequestParam(defaultValue = "10") int size) {
+    public List<EmpresaAsociadaDTO> obtenerEmpresas(@RequestParam(defaultValue = "1") int page,
+                                                    @RequestParam(defaultValue = "10") int size) {
         return empresasAsociadasService.obtenerEmpresas(page, size);
     }
 
@@ -42,7 +43,7 @@ public class EmpresasAsociadasController {
     }
 
     @GetMapping("/mas-fallos")
-    public List<EmpresasAsociadas> empresasConMasFallos(@RequestParam(defaultValue = "1") int page,
+    public List<EmpresaAsociadaDTO> empresasConMasFallos(@RequestParam(defaultValue = "1") int page,
                                                         @RequestParam(defaultValue = "10") int size) {
         return empresasAsociadasService.obtenerEmpresasConMasFallos(page, size);
     }

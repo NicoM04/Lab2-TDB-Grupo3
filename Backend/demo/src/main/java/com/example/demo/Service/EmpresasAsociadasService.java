@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.DTO.EmpresaAsociadaDTO;
 import com.example.demo.Entity.EmpresasAsociadas;
 import com.example.demo.Repository.EmpresasAsociadasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class EmpresasAsociadasService {
     }
 
     // Obtener todas las empresas
-    public List<EmpresasAsociadas> obtenerEmpresas(int page, int size) {
+    public List<EmpresaAsociadaDTO> obtenerEmpresas(int page, int size) {
         return empresasAsociadasRepository.getAll(page, size);
     }
 
@@ -33,7 +34,7 @@ public class EmpresasAsociadasService {
         empresasAsociadasRepository.delete(id);
     }
 
-    public List<EmpresasAsociadas> obtenerEmpresasConMasFallos(int page, int size) {
+    public List<EmpresaAsociadaDTO> obtenerEmpresasConMasFallos(int page, int size) {
         return empresasAsociadasRepository.getEmpresasConMasFallos(page, size);
     }
 

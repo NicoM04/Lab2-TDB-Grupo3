@@ -1,6 +1,8 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.EmpresaAsociadaDTO;
 import com.example.demo.Entity.EmpresasAsociadas;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -13,6 +15,16 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
 
     @Autowired
     private Sql2o sql2o;
+
+    private EmpresaAsociadaDTO mapToDTO(EmpresasAsociadas empresa) {
+        EmpresaAsociadaDTO dto = new EmpresaAsociadaDTO();
+        dto.setId_empresa(empresa.getId_empresa());
+        dto.setNombre_empresa(empresa.getNombre_empresa());
+        dto.setRut_empresa(empresa.getRut_empresa());
+        dto.setCorreo_contacto(empresa.getCorreo_contacto());
+        dto.setDireccion(empresa.getDireccion());
+        return dto;
+    }
 
     @Override
     public EmpresasAsociadas crear(EmpresasAsociadas empresa) {
@@ -35,17 +47,24 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
     }
 
     @Override
-    public List<EmpresasAsociadas> getAll(int page, int size) {
+    public List<EmpresaAsociadaDTO> getAll(int page, int size) {
         int offset = (page - 1) * size;
-        String sql = "SELECT * FROM empresas_asociadas LIMIT :size OFFSET :offset";
+        String sql = """
+        SELECT id_empresa, nombre_empresa, rut_empresa, correo_contacto, direccion,
+               ST_Y(ubicacion) AS latitud,
+               ST_X(ubicacion) AS longitud
+        FROM empresas_asociadas
+        LIMIT :size OFFSET :offset
+        """;
 
         try (Connection conn = sql2o.open()) {
             return conn.createQuery(sql)
                     .addParameter("size", size)
                     .addParameter("offset", offset)
-                    .executeAndFetch(EmpresasAsociadas.class);
+                    .executeAndFetch(EmpresaAsociadaDTO.class);
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error en getAll: " + e.getMessage());
             return null;
         }
     }
@@ -82,14 +101,14 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
     }
 
     @Override
-    public List<EmpresasAsociadas> getEmpresasConMasFallos(int page, int size) {
+    public List<EmpresaAsociadaDTO> getEmpresasConMasFallos(int page, int size) {
         int offset = (page - 1) * size;
         String sql = """
-        SELECT e.*
+        SELECT e.id_empresa, e.nombre_empresa, e.rut_empresa, e.correo_contacto, e.direccion
         FROM empresas_asociadas e
         JOIN pedido p ON e.id_empresa = p.id_empresa
         WHERE p.estado = 'Cancelado'
-        GROUP BY e.id_empresa
+        GROUP BY e.id_empresa, e.nombre_empresa, e.rut_empresa, e.correo_contacto, e.direccion, e.ubicacion
         ORDER BY COUNT(p.id_pedido) DESC
         LIMIT :size OFFSET :offset
         """;
@@ -98,12 +117,13 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
             return conn.createQuery(sql)
                     .addParameter("size", size)
                     .addParameter("offset", offset)
-                    .executeAndFetch(EmpresasAsociadas.class);
+                    .executeAndFetch(EmpresaAsociadaDTO.class);
         } catch (Exception e) {
             System.out.println("Error al obtener empresas con más fallos: " + e.getMessage());
             return null;
         }
     }
+
 
 
 }

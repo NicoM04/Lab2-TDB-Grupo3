@@ -33,8 +33,8 @@ public class RepartidorController {
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<Repartidor> obtenerPorId(@PathVariable("id") Integer id) {
-        Repartidor repartidor = repartidorService.findById(id);
+    public ResponseEntity<RepartidorDTO> obtenerPorId(@PathVariable("id") Integer id) {
+        RepartidorDTO repartidor = repartidorService.findById(id);
         if (repartidor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Si no se encuentra el repartidor
         }

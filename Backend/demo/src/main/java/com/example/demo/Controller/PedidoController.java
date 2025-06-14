@@ -25,7 +25,7 @@ public class PedidoController {
     }
 
     @GetMapping("/getAll")
-    public List<Pedido> obtenerTodos(@RequestParam(defaultValue = "1") int page,
+    public List<PedidoDTO> obtenerTodos(@RequestParam(defaultValue = "1") int page,
                                      @RequestParam(defaultValue = "10") int size) {
         return pedidoService.obtenerTodos(page, size);
     }
@@ -36,11 +36,10 @@ public class PedidoController {
         return pedidoService.obtenerResumenPorCliente(id);
     }
 
-
     // Obtener un pedido por ID
     @GetMapping("/getById/{id}")
-    public ResponseEntity<Pedido> obtenerPorId(@PathVariable("id") Integer id) {
-        Pedido pedido = pedidoService.getById(id);
+    public ResponseEntity<PedidoDTO> obtenerPorId(@PathVariable("id") Integer id) {
+        PedidoDTO pedido = pedidoService.getById(id);
         if (pedido == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // Si no se encuentra el pedido
         }
@@ -90,10 +89,10 @@ public class PedidoController {
     }
 
     @GetMapping("/cliente/{idCliente}")
-    public ResponseEntity<List<Pedido>> obtenerPedidosPorCliente(@PathVariable Integer idCliente,
+    public ResponseEntity<List<PedidoDTO>> obtenerPedidosPorCliente(@PathVariable Integer idCliente,
                                                                  @RequestParam(defaultValue = "1") int page,
                                                                  @RequestParam(defaultValue = "10") int size) {
-        List<Pedido> pedidos = pedidoService.obtenerPedidosPorCliente(idCliente, page, size);
+        List<PedidoDTO> pedidos = pedidoService.obtenerPedidosPorCliente(idCliente, page, size);
         if (pedidos.isEmpty()) {
             return ResponseEntity.status(404).body(null); // No hay pedidos para este cliente
         }

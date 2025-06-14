@@ -8,7 +8,7 @@ import java.util.Map;
 public interface RepartidoresRepository {
     public Repartidor crear(Repartidor repartidor);
     public List<RepartidorDTO> getAll(int page, int size);
-    public Repartidor findById(Integer id);
+    public RepartidorDTO findById(Integer id);
     public String update(Repartidor repartidor, Integer id);
     public void delete(Integer id);
 

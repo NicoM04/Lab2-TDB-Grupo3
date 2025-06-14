@@ -1,9 +1,6 @@
 package com.example.demo.Service;
 
-import com.example.demo.DTO.PedidoCercanoDTO;
-import com.example.demo.DTO.PedidoCompletoDTO;
-import com.example.demo.DTO.PedidoRutaDTO;
-import com.example.demo.DTO.ResumenPedidoDTO;
+import com.example.demo.DTO.*;
 import com.example.demo.Entity.Pedido;
 import com.example.demo.Repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +20,11 @@ public class PedidoService {
     }
 
     //servicio getAll pedidos
-    public List<Pedido> obtenerTodos(int page, int size) {
+    public List<PedidoDTO> obtenerTodos(int page, int size) {
         return pedidoRepository.getAll(page, size);
     }
 
-    public Pedido getById(Integer id) {
+    public PedidoDTO getById(Integer id) {
         return pedidoRepository.getById(id);
     }
 
@@ -43,7 +40,6 @@ public class PedidoService {
         return pedidoRepository.obtenerResumenPorCliente(idCliente);
     }
 
-
     //--------------- PROCEDIMIENTOS---------------
     public void registrarPedido(PedidoCompletoDTO pedido) {
         pedidoRepository.registrarPedidoCompleto(pedido);
@@ -58,7 +54,7 @@ public class PedidoService {
     }
 
     // Método para obtener los pedidos de un cliente
-    public List<Pedido> obtenerPedidosPorCliente(Integer idCliente, int page, int size) {
+    public List<PedidoDTO> obtenerPedidosPorCliente(Integer idCliente, int page, int size) {
         return pedidoRepository.getPedidosByCliente(idCliente, page, size);
     }
 

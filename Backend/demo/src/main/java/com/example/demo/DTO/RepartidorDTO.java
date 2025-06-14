@@ -16,6 +16,5 @@ public class RepartidorDTO {
     private Boolean activo;
     private Integer cantidad_entregas;
 
-    private double latitud;
-    private double longitud;
+    private Integer puntuacion;
 }

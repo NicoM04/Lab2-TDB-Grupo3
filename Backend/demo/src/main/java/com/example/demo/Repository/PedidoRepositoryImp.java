@@ -1,9 +1,6 @@
 package com.example.demo.Repository;
 
-import com.example.demo.DTO.PedidoCercanoDTO;
-import com.example.demo.DTO.PedidoCompletoDTO;
-import com.example.demo.DTO.PedidoRutaDTO;
-import com.example.demo.DTO.ResumenPedidoDTO;
+import com.example.demo.DTO.*;
 import com.example.demo.Entity.Pedido;
 import com.example.demo.Repository.PedidoRepository;
 import org.sql2o.Connection;
@@ -21,6 +18,22 @@ public class PedidoRepositoryImp implements PedidoRepository {
 
     @Autowired
     private Sql2o sql2o;
+
+    public PedidoDTO mapToDTO(Pedido pedido) {
+        if (pedido == null) return null;
+        return new PedidoDTO(
+                pedido.getId_pedido(),
+                pedido.getId_cliente(),
+                pedido.getId_empresa(),
+                pedido.getId_repartidor(),
+                pedido.getId_pago(),
+                pedido.getFecha_pedido(),
+                pedido.getFecha_entrega(),
+                pedido.getEstado(),
+                pedido.getUrgente()
+        );
+    }
+
 
     @Override
     public Pedido crear(Pedido pedido) {
@@ -42,15 +55,35 @@ public class PedidoRepositoryImp implements PedidoRepository {
     }
 
     @Override
-    public List<Pedido> getAll(int page, int size) {
+    public List<PedidoDTO> getAll(int page, int size) {
         int offset = (page - 1) * size;
-        String sql = "SELECT * FROM Pedido LIMIT :size OFFSET :offset";
+        String sql = "SELECT id_pedido, id_cliente, id_empresa, id_repartidor, id_pago, " +
+                "fecha_pedido, fecha_entrega, estado, urgente " +
+                "FROM Pedido LIMIT :size OFFSET :offset";
 
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .addParameter("size", size)
                     .addParameter("offset", offset)
-                    .executeAndFetch(Pedido.class);
+                    .executeAndFetch(PedidoDTO.class);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public PedidoDTO getById(Integer id) {
+        String sql = "SELECT id_pedido, id_cliente, id_empresa, id_repartidor, id_pago, " +
+                "fecha_pedido, fecha_entrega, estado, urgente " +
+                "FROM Pedido WHERE id_pedido = :id_pedido";
+
+        try (var con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("id_pedido", id)
+                    .executeAndFetchFirst(PedidoDTO.class);
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -58,15 +91,6 @@ public class PedidoRepositoryImp implements PedidoRepository {
     }
 
 
-    @Override
-    public Pedido getById(Integer id) {
-        String sql = "SELECT * FROM Pedido WHERE id_pedido = :id_pedido";
-        try (var con = sql2o.open()) {
-            return con.createQuery(sql)
-                    .addParameter("id_pedido", id)
-                    .executeAndFetchFirst(Pedido.class);  // Devuelve el primer resultado o null si no existe
-        }
-    }
 
     @Override
     public String update(Pedido pedido, Integer id) {
@@ -198,21 +222,25 @@ public class PedidoRepositoryImp implements PedidoRepository {
 
     // Método para obtener los pedidos por id_cliente
     @Override
-    public List<Pedido> getPedidosByCliente(Integer idCliente, int page, int size) {
+    public List<PedidoDTO> getPedidosByCliente(Integer idCliente, int page, int size) {
         int offset = (page - 1) * size;
-        String sql = "SELECT * FROM Pedido WHERE id_cliente = :id_cliente LIMIT :size OFFSET :offset";
+        String sql = "SELECT id_pedido, id_cliente, id_empresa, id_repartidor, id_pago, " +
+                "fecha_pedido, fecha_entrega, estado, urgente " +
+                "FROM Pedido WHERE id_cliente = :id_cliente LIMIT :size OFFSET :offset";
 
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .addParameter("id_cliente", idCliente)
                     .addParameter("size", size)
                     .addParameter("offset", offset)
-                    .executeAndFetch(Pedido.class);
+                    .executeAndFetch(PedidoDTO.class);
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
     }
+
 
     @Override
     public List<Pedido> getPedidosMasCercanos(Integer idEmpresa, int limite) {
