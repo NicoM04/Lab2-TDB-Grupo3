@@ -33,7 +33,7 @@
           <tr v-for="repartidor in repartidoresDesempeno" :key="repartidor.id_repartidor">
             <td>{{ repartidor.nombre_repartidor }}</td>
             <td>{{ repartidor.cantidad_entregas }}</td>
-            <td>{{ repartidor.puntuacionPromedio.toFixed(2) }}</td> <!-- Mostrar puntuación promedio -->
+            <td>{{ Number(repartidor.puntuacionPromedio || 0).toFixed(2) }}</td> <!-- Mostrar puntuación promedio -->
           </tr>
         </tbody>
       </table>

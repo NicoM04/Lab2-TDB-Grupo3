@@ -53,7 +53,7 @@ export default {
           const pedidos = pedidosResponse.data.filter(pedido => pedido.id_empresa === empresa.id_empresa); // Filtramos los pedidos por empresa
 
           // Contamos los pedidos entregados
-          let pedidosEntregados = pedidos.filter(pedido => pedido.estado.toLowerCase() === 'entregado').length;
+          let pedidosEntregados = pedidos.filter(pedido => pedido.estado.toLowerCase() === 'finalizado').length;
 
           // Sumamos el monto total de los pedidos de la empresa
           let volumenTotal = 0;
