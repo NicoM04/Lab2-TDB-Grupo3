@@ -8,8 +8,8 @@
       <select v-model="estadoFiltro" @change="filtrarPedidos">
         <option value="">Todos</option>
         <option value="pendiente">Pendiente</option>
-        <option value="enviado">Enviado</option>
-        <option value="entregado">Entregado</option>
+        <option value="en reparto">En Reparto</option>
+        <option value="finalizado">Finalizado</option>
         <option value="cancelado">Cancelado</option>
       </select>
 

@@ -89,14 +89,13 @@ public class PedidoController {
     }
 
     @GetMapping("/cliente/{idCliente}")
-    public ResponseEntity<List<PedidoDTO>> obtenerPedidosPorCliente(@PathVariable Integer idCliente,
-                                                                 @RequestParam(defaultValue = "1") int page,
-                                                                 @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<List<PedidoDTO>> obtenerPedidosPorCliente(
+            @PathVariable Integer idCliente,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
         List<PedidoDTO> pedidos = pedidoService.obtenerPedidosPorCliente(idCliente, page, size);
-        if (pedidos.isEmpty()) {
-            return ResponseEntity.status(404).body(null); // No hay pedidos para este cliente
-        }
-        return ResponseEntity.ok(pedidos); // Devolver los pedidos encontrados
+        return ResponseEntity.ok(pedidos); // ✅ Devuelve 200 OK incluso si está vacío
     }
 
     @GetMapping("/masCercanos/{idEmpresa}")

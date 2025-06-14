@@ -122,6 +122,42 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
         }
     }
 
+    @Override
+    public EmpresaAsociadaDTO getById(Integer id) {
+        String sql = """
+    SELECT id_empresa, nombre_empresa, rut_empresa, correo_contacto, direccion
+    FROM empresas_asociadas
+    WHERE id_empresa = :id
+    """;
+
+        try (Connection conn = sql2o.open()) {
+            return conn.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(EmpresaAsociadaDTO.class);
+        } catch (Exception e) {
+            System.out.println("Error en getById: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public EmpresaAsociadaDTO getByName(String nombre) {
+        String sql = """
+    SELECT id_empresa, nombre_empresa, rut_empresa, correo_contacto, direccion
+    FROM empresas_asociadas
+    WHERE LOWER(nombre_empresa) = LOWER(:nombre)
+    """;
+
+        try (Connection conn = sql2o.open()) {
+            return conn.createQuery(sql)
+                    .addParameter("nombre", nombre)
+                    .executeAndFetchFirst(EmpresaAsociadaDTO.class);
+        } catch (Exception e) {
+            System.out.println("Error en getByName: " + e.getMessage());
+            return null;
+        }
+    }
+
 
 
 }

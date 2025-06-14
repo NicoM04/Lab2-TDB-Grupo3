@@ -10,6 +10,8 @@ public interface EmpresasAsociadasRepository {
     public List<EmpresaAsociadaDTO> getAll(int page, int size);
     public String update(EmpresasAsociadas empresa, Integer id);
     public void delete(Integer id);
+    public EmpresaAsociadaDTO getById(Integer id);
+    public EmpresaAsociadaDTO getByName(String nombre);
 
     List<EmpresaAsociadaDTO> getEmpresasConMasFallos(int page, int size);
 }

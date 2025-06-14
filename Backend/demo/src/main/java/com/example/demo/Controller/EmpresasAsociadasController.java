@@ -4,6 +4,7 @@ import com.example.demo.DTO.EmpresaAsociadaDTO;
 import com.example.demo.Entity.EmpresasAsociadas;
 import com.example.demo.Service.EmpresasAsociadasService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +47,26 @@ public class EmpresasAsociadasController {
     public List<EmpresaAsociadaDTO> empresasConMasFallos(@RequestParam(defaultValue = "1") int page,
                                                         @RequestParam(defaultValue = "10") int size) {
         return empresasAsociadasService.obtenerEmpresasConMasFallos(page, size);
+    }
+
+    // Obtener empresa por ID
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<EmpresaAsociadaDTO> obtenerEmpresaPorId(@PathVariable Integer id) {
+        EmpresaAsociadaDTO dto = empresasAsociadasService.obtenerEmpresaPorId(id);
+        if (dto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(dto);
+    }
+
+    // Obtener empresa por nombre
+    @GetMapping("/getByName/{nombre}")
+    public ResponseEntity<EmpresaAsociadaDTO> obtenerEmpresaPorNombre(@PathVariable String nombre) {
+        EmpresaAsociadaDTO dto = empresasAsociadasService.obtenerEmpresaPorNombre(nombre);
+        if (dto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(dto);
     }
 
 }

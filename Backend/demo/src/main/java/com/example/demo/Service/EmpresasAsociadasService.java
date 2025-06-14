@@ -38,4 +38,14 @@ public class EmpresasAsociadasService {
         return empresasAsociadasRepository.getEmpresasConMasFallos(page, size);
     }
 
+    // Obtener empresa por ID
+    public EmpresaAsociadaDTO obtenerEmpresaPorId(Integer id) {
+        return empresasAsociadasRepository.getById(id);
+    }
+
+    // Obtener empresa por nombre
+    public EmpresaAsociadaDTO obtenerEmpresaPorNombre(String nombre) {
+        return empresasAsociadasRepository.getByName(nombre);
+    }
+
 }
