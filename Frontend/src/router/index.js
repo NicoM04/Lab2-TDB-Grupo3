@@ -9,7 +9,7 @@ import Notificaciones from '@/components/Notificaciones.vue';
 import ProductoDetalle from '@/components/ProductoDetalle.vue';
 import ProductosMasPedidos from '@/components/ProductosMasPedidos.vue';
 import Carrito from '@/components/Carrito.vue';
-
+import ConsultasCliente from "@/components/ConsultasCliente.vue";
 
 //Definir las rutas de la aplicacion
 const routes = [
@@ -78,9 +78,16 @@ const routes = [
     name: 'carrito',
     component: Carrito,
     meta: { requiresAuth: true }
-  }
+  },
+
+
+  {
+    path: "/consultas-cliente",
+    component: ConsultasCliente,
+  },
 
 ];
+
 
 //Crear el router
 const router = createRouter({

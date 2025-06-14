@@ -64,10 +64,28 @@ const deleteCliente = (id, token) => {
   });
 };
 
-// Obtener el cliente con mayor gasto
-const getClienteMayorGasto = () => {
-  return httpClient.get('/cliente/mayor-gasto');
+
+// Verificar zona de cobertura
+const verificarZonaCobertura = (id) => {
+  return httpClient.get(`/cliente/zonaCobertura/${id}`);
 };
+
+// Clientes lejanos de todas las empresas
+const getClientesLejanos = () => {
+  return httpClient.get('/cliente/clientesLejanos');
+};
+
+// Clientes fuera de zona de cobertura
+const getClientesFueraDeCobertura = (distancia = 5000) => {
+  return httpClient.get(`/cliente/fueraDeCobertura?distancia=${distancia}`);
+};
+
+
+// Cliente con mayor gasto
+const getClienteMayorGasto = () => {
+  return httpClient.get(`/cliente/mayor-gasto`);
+};
+
 
 export default {
   registerCliente,
@@ -78,5 +96,9 @@ export default {
   buscarPorNombre,
   updateCliente,
   deleteCliente,
+  verificarZonaCobertura,
+  getClientesLejanos,
   getClienteMayorGasto,
+  getClientesFueraDeCobertura,
 };
+

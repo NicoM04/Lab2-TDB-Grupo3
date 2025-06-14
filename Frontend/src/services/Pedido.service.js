@@ -80,6 +80,23 @@ const obtenerPedidosCliente = (idCliente, token) => {
   });
 };
 
+
+//Obtener pedidos más cercanos a una empresa
+const getPedidosMasCercanosEmpresa = (idEmpresa, limite = 5) => {
+  return httpClient.get(`/pedido/masCercanosEmpresa/${idEmpresa}?limite=${limite}`);
+};
+
+//Obtener pedidos más lejanos por empresa
+const getPedidosMasLejanosPorEmpresa = () => {
+  return httpClient.get("/pedido/masLejanosPorEmpresa");
+};
+
+// Obtener pedidos que cruzan más de dos zonas de reparto
+const getPedidosConMasDeDosZonas = () => {
+  return httpClient.get("/pedido/pedidosConMasDeDosZonas");
+};
+
+
 export default {
   createPedido,
   getAllPedidos,
@@ -90,4 +107,7 @@ export default {
   confirmarPedidoYDescontarStock,
   cambiarEstadoPedido,
   obtenerPedidosCliente,
+  getPedidosMasCercanosEmpresa,
+  getPedidosMasLejanosPorEmpresa,
+  getPedidosConMasDeDosZonas
 };
