@@ -50,9 +50,7 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
     public List<EmpresaAsociadaDTO> getAll(int page, int size) {
         int offset = (page - 1) * size;
         String sql = """
-        SELECT id_empresa, nombre_empresa, rut_empresa, correo_contacto, direccion,
-               ST_Y(ubicacion) AS latitud,
-               ST_X(ubicacion) AS longitud
+        SELECT id_empresa, nombre_empresa, rut_empresa, correo_contacto, direccion
         FROM empresas_asociadas
         LIMIT :size OFFSET :offset
         """;
@@ -108,7 +106,7 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
         FROM empresas_asociadas e
         JOIN pedido p ON e.id_empresa = p.id_empresa
         WHERE p.estado = 'Cancelado'
-        GROUP BY e.id_empresa, e.nombre_empresa, e.rut_empresa, e.correo_contacto, e.direccion, e.ubicacion
+        GROUP BY e.id_empresa, e.nombre_empresa, e.rut_empresa, e.correo_contacto, e.direccion
         ORDER BY COUNT(p.id_pedido) DESC
         LIMIT :size OFFSET :offset
         """;
