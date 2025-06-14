@@ -48,16 +48,16 @@ public class ClienteController {
 
     // Obtener todos los clientes
     @GetMapping("/getAll")
-    public ResponseEntity<List<Cliente>> obtenerTodosLosClientes(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<List<ClienteDTO>> obtenerTodosLosClientes(@RequestParam(defaultValue = "1") int page,
                                                                  @RequestParam(defaultValue = "10") int size) {
-        List<Cliente> clientes = clienteService.obtenerTodosLosClientes(page, size);
+        List<ClienteDTO> clientes = clienteService.obtenerTodosLosClientes(page, size);
         return clientes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(clientes);
     }
 
     // Obtener un cliente por su ID
     @GetMapping("/getById/{id}")
-    public ResponseEntity<Cliente> obtenerClientePorId(@PathVariable Integer id) {
-        Cliente cliente = clienteService.obtenerClientePorId(id);
+    public ResponseEntity<ClienteDTO> obtenerClientePorId(@PathVariable Integer id) {
+        ClienteDTO cliente = clienteService.obtenerClientePorId(id);
         return cliente != null ? ResponseEntity.ok(cliente) : ResponseEntity.notFound().build();
     }
 

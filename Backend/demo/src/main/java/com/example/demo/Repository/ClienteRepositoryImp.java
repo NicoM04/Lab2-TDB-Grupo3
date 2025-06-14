@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.ClienteDTO;
 import com.example.demo.DTO.ClienteLejanoDTO;
 import com.example.demo.Entity.Cliente;
 import com.example.demo.Entity.ZonaCobertura;
@@ -40,17 +41,54 @@ public class ClienteRepositoryImp implements ClienteRepository {
     }
 
     @Override
-    public List<Cliente> getAll(int page, int size) {
-        String sql = "SELECT * FROM Cliente LIMIT :size OFFSET :offset";
+    public List<ClienteDTO> getAll(int page, int size) {
+        String sql = """
+        SELECT 
+            id_cliente,
+            nombre_cliente,
+            contrasena_cliente,
+            correo_cliente,
+            direccion,
+            telefono,
+            TO_CHAR(fecha_registro, 'YYYY-MM-DD') AS fecha_registro,
+            ST_Y(ubicacion) AS lat,
+            ST_X(ubicacion) AS lon
+        FROM Cliente
+        LIMIT :size OFFSET :offset
+        """;
+
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .addParameter("size", size)
                     .addParameter("offset", (page - 1) * size)
-                    .executeAndFetch(Cliente.class);
+                    .executeAndFetch(ClienteDTO.class);
         }
     }
 
+    @Override
+    public ClienteDTO findById(Integer id) {
+        String sql = """
+        SELECT 
+            id_cliente,
+            nombre_cliente,
+            contrasena_cliente,
+            correo_cliente,
+            direccion,
+            telefono,
+            TO_CHAR(fecha_registro, 'YYYY-MM-DD') as fecha_registro,
+            ST_Y(ubicacion) AS lat,
+            ST_X(ubicacion) AS lon
+        FROM Cliente 
+        WHERE id_cliente = :id_cliente
+        """;
 
+        try (var con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("id_cliente", id)
+                    .executeAndFetchFirst(ClienteDTO.class);
+        }
+    }
+    
     @Override
     public String update(Cliente cliente, Integer id) {
         // SQL modificado para actualizar solo los campos que deseas
@@ -79,16 +117,6 @@ public class ClienteRepositoryImp implements ClienteRepository {
             con.createQuery(sql)
                     .addParameter("id_cliente", id)
                     .executeUpdate();
-        }
-    }
-
-    @Override
-    public Cliente findById(Integer id) {
-        String sql = "SELECT * FROM Cliente WHERE id_cliente = :id_cliente";
-        try (var con = sql2o.open()) {
-            return con.createQuery(sql)
-                    .addParameter("id_cliente", id)
-                    .executeAndFetchFirst(Cliente.class); // Devuelve el primer resultado o null si no existe.
         }
     }
 

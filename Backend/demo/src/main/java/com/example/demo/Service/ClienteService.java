@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.DTO.ClienteDTO;
 import com.example.demo.DTO.ClienteLejanoDTO;
 import com.example.demo.Entity.Cliente;
 import com.example.demo.Entity.ZonaCobertura;
@@ -57,12 +58,12 @@ public class ClienteService {
     }
 
     // Obtener todos los clientes
-    public List<Cliente> obtenerTodosLosClientes(int page, int size) {
+    public List<ClienteDTO> obtenerTodosLosClientes(int page, int size) {
         return clienteRepository.getAll(page, size);
     }
 
     // Obtener un cliente por su ID
-    public Cliente obtenerClientePorId(Integer id) {
+    public ClienteDTO obtenerClientePorId(Integer id) {
         return clienteRepository.findById(id);
     }
 
