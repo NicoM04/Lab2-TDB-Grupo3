@@ -66,24 +66,40 @@ const deleteCliente = (id, token) => {
 
 
 // Verificar zona de cobertura
-const verificarZonaCobertura = (id) => {
-  return httpClient.get(`/cliente/zonaCobertura/${id}`);
+const verificarZonaCobertura = (id, token) => {
+  return httpClient.get(`/cliente/zonaCobertura/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 // Clientes lejanos de todas las empresas
-const getClientesLejanos = () => {
-  return httpClient.get('/cliente/clientesLejanos');
+const getClientesLejanos = (token) => {
+  return httpClient.get('/cliente/clientesLejanos', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 // Clientes fuera de zona de cobertura
-const getClientesFueraDeCobertura = (distancia = 5000) => {
-  return httpClient.get(`/cliente/fueraDeCobertura?distancia=${distancia}`);
+const getClientesFueraDeCobertura = (token, distancia = 5000) => {
+  return httpClient.get(`/cliente/fueraDeCobertura?distancia=${distancia}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 
 // Cliente con mayor gasto
-const getClienteMayorGasto = () => {
-  return httpClient.get(`/cliente/mayor-gasto`);
+const getClienteMayorGasto = (token) => {
+  return httpClient.get(`/cliente/mayor-gasto`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 

@@ -82,18 +82,30 @@ const obtenerPedidosCliente = (idCliente, token) => {
 
 
 //Obtener pedidos más cercanos a una empresa
-const getPedidosMasCercanosEmpresa = (idEmpresa, limite = 5) => {
-  return httpClient.get(`/pedido/masCercanosEmpresa/${idEmpresa}?limite=${limite}`);
+const getPedidosMasCercanosEmpresa = (idEmpresa, token, limite = 5) => {
+  return httpClient.get(`/pedido/masCercanosEmpresa/${idEmpresa}?limite=${limite}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 //Obtener pedidos más lejanos por empresa
-const getPedidosMasLejanosPorEmpresa = () => {
-  return httpClient.get("/pedido/masLejanosPorEmpresa");
+const getPedidosMasLejanosPorEmpresa = (token) => {
+  return httpClient.get("/pedido/masLejanosPorEmpresa", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 // Obtener pedidos que cruzan más de dos zonas de reparto
-const getPedidosConMasDeDosZonas = () => {
-  return httpClient.get("/pedido/pedidosConMasDeDosZonas");
+const getPedidosConMasDeDosZonas = (token) => {
+  return httpClient.get("/pedido/pedidosConMasDeDosZonas", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 

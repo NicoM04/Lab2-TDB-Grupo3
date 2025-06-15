@@ -229,32 +229,39 @@ export default {
   },
   methods: {
     async fetchClientesLejanos() {
-      const res = await ClienteService.getClientesLejanos();
+      const token = localStorage.getItem("jwt"); // Obtener el token de localStorage
+      const res = await ClienteService.getClientesLejanos(token);
       this.clientesLejanos = res.data;
     },
     async verificarZona() {
+      const token = localStorage.getItem("jwt"); // Obtener el token de localStorage
       if (!this.clienteId) return;
-      const res = await ClienteService.verificarZonaCobertura(this.clienteId);
+      const res = await ClienteService.verificarZonaCobertura(this.clienteId, token);
       this.zonaCobertura = res.data;
     },
     async consultarPedidosCercanos() {
+      const token = localStorage.getItem("jwt"); // Obtener el token de localStorage
       if (!this.empresaIdCercanos) return;
-      const res = await PedidoService.getPedidosMasCercanosEmpresa(this.empresaIdCercanos);
+      const res = await PedidoService.getPedidosMasCercanosEmpresa(this.empresaIdCercanos, token);
       this.pedidosCercanos = res.data;
     },
     async consultarPedidosLejanos() {
-      const res = await PedidoService.getPedidosMasLejanosPorEmpresa();
+      const token = localStorage.getItem("jwt"); // Obtener el token de localStorage
+      const res = await PedidoService.getPedidosMasLejanosPorEmpresa(token);
       this.pedidosLejanos = res.data;
     },
     async consultarPedidosCruzanZonas() {
-      const res = await PedidoService.getPedidosConMasDeDosZonas();
+      const token = localStorage.getItem("jwt"); // Obtener el token de localStorage
+      const res = await PedidoService.getPedidosConMasDeDosZonas(token);
       this.pedidosCruzanZonas = res.data;
     },
     async consultarDistanciaTotal() {
+      const token = localStorage.getItem("jwt"); // Obtener el token de localStorage
       if (!this.idRepartidorConsulta) return;
       const res = await RepartidorService.getDistanciaTotalRecorrida(
         this.idRepartidorConsulta,
-        this.ultimosMesesConsulta
+        this.ultimosMesesConsulta,
+        token
       );
       this.distanciaTotal = res.data;
     },
