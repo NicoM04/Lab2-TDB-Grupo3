@@ -62,6 +62,13 @@ const getMejoresRepartidores = (token) => {
     },
   });
 };
+// Obtener distancia total recorrida por repartidor en los últimos X meses
+const getDistanciaTotalRecorrida = (idRepartidor, ultimosMeses) => {
+  return httpClient.get(
+    `/repartidor/distanciaTotalRecorrida/${idRepartidor}?ultimosMeses=${ultimosMeses}`
+  );
+};
+
 
 export default {
   createRepartidor,
@@ -71,4 +78,5 @@ export default {
   deleteRepartidor,
   getTiempoPromedioEntrega,
   getMejoresRepartidores,
+  getDistanciaTotalRecorrida,
 };
