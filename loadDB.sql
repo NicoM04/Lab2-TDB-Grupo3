@@ -10,7 +10,8 @@ INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direcci
 ('Sofía Herrera', 'contraseña', 'sofia.herrera@example.com', 'Av. Norte 118', '912345684', '2021-11-10', ST_GeomFromText('POINT(-70.7431 -33.4366)', 4326)), -- Pudahuel
 ('Rodrigo Ruiz', 'contraseña', 'rodrigo.ruiz@example.com', 'Pasaje Sol 11', '912345685', '2019-08-30', ST_GeomFromText('POINT(-70.6565 -33.4569)', 4326)), -- Ñuñoa
 ('Fernanda Pino', 'contraseña', 'fernanda.pino@example.com', 'Calle Sur 80', '912345686', '2023-06-18', ST_GeomFromText('POINT(-70.7082 -33.5202)', 4326)), -- San Bernardo
-('Javier Soto', 'contraseña', 'javier.soto@example.com', 'Av. del Mar 300', '912345687', '2024-01-09', ST_GeomFromText('POINT(-70.5812 -33.6002)', 4326)); -- Puente Alto
+('Javier Soto', 'contraseña', 'javier.soto@example.com', 'Av. del Mar 300', '912345687', '2024-01-09', ST_GeomFromText('POINT(-70.5812 -33.6002)', 4326)), -- Puente Alto
+('Luis Garcia', 'contraseña', 'luis.garcia@example.com', 'Av. Norte 205', '912345687', '2024-01-18', ST_GeomFromText('POINT( -70.651694 -34.010273)', 4326)); -- Puente Alto
 
 
 INSERT INTO Empresas_Asociadas (nombre_empresa, rut_empresa, correo_contacto, direccion, ubicacion) VALUES
@@ -140,8 +141,8 @@ INSERT INTO Pedido (id_cliente, id_empresa, id_repartidor, id_pago, fecha_pedido
 (4, 2, 2, 7, '2025-05-14', '2025-05-14', 'Pendiente', FALSE), -- Pendiente
 (5, 3, 2, 8, '2020-12-01', '2020-12-02', 'Cancelado', FALSE),
 (6, 4, 2, 9, '2019-10-22', '2019-10-22', 'Finalizado', FALSE),
-(7, 5, 2, 10, '2025-04-01', '2025-04-02', 'Finalizado', FALSE),
-(8, 1, 2, 11, '2025-03-14', '2025-03-15', 'Finalizado', FALSE),
+(7, 5, 2, 10, '2025-06-15', '2025-06-17', 'Pendiente', FALSE), -- SE CAMBIO
+(8, 1, 2, 11, '2025-06-14', '2025-06-16', 'Pendiente', FALSE), -- SE CAMBIO
 (9, 2, 2, 12, '2021-09-29', '2021-09-30', 'Finalizado', FALSE),
 (10, 3, 2, 13, '2022-06-30', '2022-07-01', 'Finalizado', FALSE),
 
