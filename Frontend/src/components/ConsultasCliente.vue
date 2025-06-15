@@ -2,6 +2,7 @@
   <div class="p-4">
     <h1 class="text-2xl font-bold mb-4">Consultas de Clientes y Pedidos</h1>
     <div style="height: 400px;">
+    
 </div>
 
 
@@ -18,24 +19,25 @@
       </ul>
       <button @click="fetchClientesLejanos" class="btn">Consultar</button>
     </section>
-      <l-map
-    style="height: 400px; width: 100%;"
-    :zoom="12"
-    :center="[ -33.45, -70.65 ]"
-    v-if="clientesLejanos.length"
-  >
-    <l-tile-layer
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    ></l-tile-layer>
+     <l-map
+  style="height: 400px; width: 100%; max-width: 800px; margin: 0 auto;" 
+  :zoom="12" 
+  :center="[-33.45, -70.65]"
+  v-if="clientesLejanos.length"
+>
+  <l-tile-layer
+    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  ></l-tile-layer>
 
-    <l-marker
-      v-for="(c, index) in clientesLejanos"
-      :key="index"
-      :lat-lng="parseUbicacion(c.ubicacion)"
-    >
-      <l-popup>{{ c.nombreCliente }}</l-popup>
-    </l-marker>
-  </l-map>
+  <l-marker
+    v-for="(c, index) in clientesLejanos"
+    :key="index"
+    :lat-lng="parseUbicacion(c.ubicacion)"
+  >
+    <l-popup>{{ c.nombreCliente }}</l-popup>
+  </l-marker>
+</l-map>
+
 
 
 
@@ -68,10 +70,48 @@
       <h2 class="text-xl font-semibold mb-2">Pedidos más lejanos por empresa</h2>
       <button @click="consultarPedidosLejanos" class="btn">Consultar</button>
       <ul>
-        <li v-for="(p, i) in pedidosLejanos" :key="i">
-          Empresa ID: {{ p.id_empresa }}, Pedido ID: {{ p.id_pedido }}, Distancia: {{ p.distanciaMetros.toFixed(2) }}m
-        </li>
-      </ul>
+      <li v-for="(p, i) in pedidosLejanos" :key="i">
+        Empresa ID: {{ p.idEmpresa }}, Empresa: {{ p.nombreEmpresa }}<br>
+        Pedido ID: {{ p.idPedido }}, Distancia: {{ p.distanciaMetros.toFixed(2) }} m
+      </li>
+    </ul>
+    <l-map
+  style="height: 400px; width: 100%; max-width: 800px; margin: 1rem auto;" 
+  :zoom="10" 
+  :center="[-33.45, -70.65]"
+  v-if="pedidosLejanos.length"
+>
+  <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+  <!-- Marcadores para ubicación de empresa -->
+  <l-marker
+  v-for="(p, index) in pedidosLejanos"
+  :key="'empresa-' + index"
+  :lat-lng="parseUbicacion(p.ubicacionEmpresa)"
+  :icon="iconEmpresa"
+>
+  <l-popup>
+    <strong>{{ p.nombreEmpresa }}</strong><br />
+    Empresa ID: {{ p.idEmpresa }}
+  </l-popup>
+</l-marker>
+
+  <!-- Marcadores para punto de entrega del pedido -->
+<l-marker
+  v-for="(p, index) in pedidosLejanos"
+  :key="'pedido-' + index"
+  :lat-lng="parseUbicacion(p.puntoEntrega)"
+  :icon="iconPedido"
+>
+  <l-popup>
+    <strong>Pedido ID:</strong> {{ p.idPedido }}<br />
+    Distancia: {{ p.distanciaMetros.toFixed(2) }} m
+  </l-popup>
+</l-marker>
+
+</l-map>
+
+
     </section>
 
     <!-- Pedidos que cruzan más de 2 zonas -->
@@ -79,18 +119,23 @@
       <h2 class="text-xl font-semibold mb-2">Pedidos que cruzan más de 2 zonas de reparto</h2>
       <button @click="consultarPedidosCruzanZonas" class="btn">Consultar</button>
       <ul>
-        <li v-for="(p, i) in pedidosCruzanZonas" :key="i">
-          Pedido ID: {{ p.id }}, Zonas cruzadas: {{ p.zonas_cruzadas }}
-        </li>
-      </ul>
+  <li v-for="(p, i) in pedidosCruzanZonas" :key="i" class="mb-2">
+    <strong>Pedido ID:</strong> {{ p.idPedido }}<br />
+    <strong>Cliente ID:</strong> {{ p.idCliente }}<br />
+    <strong>Empresa:</strong> {{ p.nombreEmpresa }} (ID: {{ p.idEmpresa }})<br />
+    <strong>Distancia:</strong> {{ p.distanciaMetros.toFixed(2) }} m<br />
+    <strong>Cantidad de zonas cruzadas:</strong> {{ p.cantidadZonas }}
+  </li>
+</ul>
+
     </section>
 
   </div>
 </template>
 
 <script>
-import ClienteService from "@/services/cliente.service";
-import PedidoService from "@/services/pedido.service";
+import ClienteService from "@/services/Cliente.service";
+import PedidoService from "@/services/Pedido.service";
 
 // Leaflet para Vue 3
 import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
@@ -105,7 +150,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: new URL("leaflet/dist/images/marker-shadow.png", import.meta.url).href,
 });
 
-
 export default {
   name: "ConsultasCliente",
   components: {
@@ -115,6 +159,24 @@ export default {
     LPopup,
   },
   data() {
+        const iconEmpresa = L.icon({
+      iconUrl: new URL("leaflet/dist/images/marker-icon.png", import.meta.url).href,
+      shadowUrl: new URL("leaflet/dist/images/marker-shadow.png", import.meta.url).href,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+
+    const iconPedido = L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+      shadowUrl: new URL("leaflet/dist/images/marker-shadow.png", import.meta.url).href,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+
     return {
       clienteId: "",
       zonaCobertura: null,
@@ -123,6 +185,8 @@ export default {
       pedidosCercanos: [],
       pedidosLejanos: [],
       pedidosCruzanZonas: [],
+      iconEmpresa,
+      iconPedido,
     };
   },
   methods: {
