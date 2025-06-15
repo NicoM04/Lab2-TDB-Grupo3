@@ -371,5 +371,6 @@ tbody tr:hover {
   background-color: #f8f9fa;
   border-radius: 4px;
   border-left: 4px solid #17a2b8;
+  color: #000000;
 }
 </style>
