@@ -61,7 +61,7 @@ Ingresa la contraseña del usuario postgres cuando se solicite.
 ```sh
 \i C:/ruta/loadDB.sql  
 ```
-Recargar la página para que se vea la carga de datos.
+Se inicia sesión.
 
 * Puedes iniciar sesión con los datos de los clientes cargados mediante el archivo loadDB, ya que si bien al momento de registrar un usuario por el frontend
 * su contraseña queda encriptada, al momento de cargar los datos "manualmente" no lo hace, por lo que se permitio que solo los clientes que se carguen a mano y tengan
