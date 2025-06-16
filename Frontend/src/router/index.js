@@ -10,6 +10,8 @@ import ProductoDetalle from '@/components/ProductoDetalle.vue';
 import ProductosMasPedidos from '@/components/ProductosMasPedidos.vue';
 import Carrito from '@/components/Carrito.vue';
 import ConsultasCliente from "@/components/ConsultasCliente.vue";
+import Empresas from "@/components/Empresas.vue";
+import SeleccionProductos from "@/components/SeleccionProductos.vue";
 
 //Definir las rutas de la aplicacion
 const routes = [
@@ -79,11 +81,20 @@ const routes = [
     component: Carrito,
     meta: { requiresAuth: true }
   },
-
-
   {
     path: "/consultas-cliente",
     component: ConsultasCliente,
+  },
+    {
+    path: '/empresas',
+    name: 'empresas',
+    component: Empresas,
+  },
+  {
+    path: '/productos',
+    name: 'seleccion-productos',
+    component: SeleccionProductos,
+    props: true,
   },
 
 ];

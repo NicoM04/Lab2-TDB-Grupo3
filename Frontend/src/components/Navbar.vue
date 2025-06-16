@@ -6,11 +6,10 @@
       </router-link>
     </div>
     <div class="navbar-links">
-      <router-link to="/home" class="navbar-item">Inicio</router-link>
+      <router-link to="/empresas" class="navbar-item">Comprar</router-link>
       <router-link to="/cliente/pedidos-resumen" class="navbar-item">Resumen Pedidos</router-link>
       <router-link to="/repartidores/desempeno" class="navbar-item">Desempeño Repartidor</router-link>
       <router-link to="/empresas/mayorvolumen" class="navbar-item">Empresas Mayor Volumen</router-link>
-      <router-link to="/carrito" class="navbar-item">Carrito</router-link>
       <router-link to="/consultas-cliente" class="navbar-item">Consultas</router-link>
       <button @click="logout" class="navbar-item logout-button">Cerrar sesión</button>
     </div>

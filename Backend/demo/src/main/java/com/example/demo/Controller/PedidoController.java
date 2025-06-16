@@ -26,7 +26,7 @@ public class PedidoController {
 
     @GetMapping("/getAll")
     public List<PedidoDTO> obtenerTodos(@RequestParam(defaultValue = "1") int page,
-                                     @RequestParam(defaultValue = "10") int size) {
+                                     @RequestParam(defaultValue = "100") int size) {
         return pedidoService.obtenerTodos(page, size);
     }
 

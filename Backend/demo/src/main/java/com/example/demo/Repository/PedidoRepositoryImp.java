@@ -3,6 +3,7 @@ package com.example.demo.Repository;
 import com.example.demo.DTO.*;
 import com.example.demo.Entity.Pedido;
 import com.example.demo.Repository.PedidoRepository;
+import jakarta.transaction.Transactional;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,6 +172,7 @@ public class PedidoRepositoryImp implements PedidoRepository {
     //--------------------------------------- PROCEDIMIENTOS ALMACENADOS ------------------------------------------
 
     //PROCEDIMIENTO ALMACENADO 7)
+    @Override
     public void registrarPedidoCompleto(PedidoCompletoDTO dto) {
         try (Connection conn = sql2o.open()) {
             java.sql.Connection jdbcConn = conn.getJdbcConnection();
@@ -209,6 +211,7 @@ public class PedidoRepositoryImp implements PedidoRepository {
     }
 
     //PROCEDIMIENTO ALMACENADO 9)
+    @Override
     public void confirmarPedidoYDescontarStock(int idPedido) {
         try (Connection conn = sql2o.open()) {
             conn.createQuery("CALL confirmar_pedido_y_descontar_stock(:idPedido)")

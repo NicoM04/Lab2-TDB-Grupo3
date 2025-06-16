@@ -9,6 +9,7 @@
         <option value="">Todos</option>
         <option value="pendiente">Pendiente</option>
         <option value="en reparto">En Reparto</option>
+        <option value="confirmado">Confirmado</option>
         <option value="finalizado">Finalizado</option>
         <option value="cancelado">Cancelado</option>
       </select>
